@@ -1,0 +1,189 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package IU;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+
+/**
+ *
+ * @author fabio
+ */
+public class Neuronio {
+
+    private int x; //coordenadas do desenho
+    private int y; //coordenadas do desenho
+    private int raio; // dimensao do circulo
+    private String estado; // oque será escrito no centro do circulo
+    private boolean focus; // desenha com cor diferente
+    private Color cor;  // cor padrão do contorno
+    private float peso;
+    private int tipo; //0 - entrada, 1- oculta, 2 - saida
+
+    private int pos; // posição no ArrayList da maquina
+    private boolean visitado; // auxiliar
+
+    // Gets e Sets e construtor
+    public Neuronio(int x, int y, String estado) {
+        this.raio = 20;
+        this.x = x;
+        this.y = y;
+        this.estado = estado;
+        this.focus = false;
+       
+    }
+
+    public Color getCor() {
+        return cor;
+    }
+
+    public void setCor(Color cor) {
+        this.cor = cor;
+    }
+
+    public float getPeso() {
+        return peso;
+    }
+
+    public void setPeso(float peso) {
+        this.peso = peso;
+    }
+    
+    
+    
+
+    public boolean isVisitado() {
+        return visitado;
+    }
+
+    public void setVisitado(boolean visitado) {
+        this.visitado = visitado;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getRaio() {
+        return raio;
+    }
+
+    public void setRaio(int raio) {
+        this.raio = raio;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public boolean isFocus() {
+        return focus;
+    }
+
+    public void setFocus(boolean focus) {
+        this.focus = focus;
+    }
+
+    public void setColor(Color c) {
+        this.cor = c;
+    }
+
+    public Color getColor() {
+        return this.cor;
+    }
+
+ 
+
+    
+    //Funções de desenho e manipulação
+    //Desenho
+    public void desenha(Graphics2D g) {
+        if (this.focus) { // cor se está sendo focado
+            g.setColor(Color.cyan);
+        } else { // cor padrão do circulo interno
+            g.setColor(Color.yellow);
+        }
+        g.fillOval(x - raio, y - raio, raio * 2, raio * 2);
+
+        g.setColor(this.cor); // cor da borda
+        // borda simples
+            g.setStroke(new java.awt.BasicStroke(3f));
+            g.drawOval(x - raio, y - raio, raio * 2, raio * 2);
+        
+        g.drawString(this.estado, this.x - 4, this.y + 4);
+
+    }
+    
+    
+    // Funçao com parametros mais simples para desenhar circulos 
+    public void desenhaCirculoBresenham(int x1, int y1, int x2, int y2, Graphics2D g) {
+        int r, x, y, d, dE, dSE;
+        r = (int) Math.round(Math.sqrt(Math.pow((double) (x2 - x1), 2) + Math.pow((double) (y2 - y1), 2)));
+        x = 0;
+        y = r;
+        d = 1 - r;
+        dE = 3;
+        dSE = -2 * y + 5;
+
+        simetria8(x, y, g, x1, y1);
+        while (x <= y) {
+            if (d > 0) {
+                d += dSE;
+                dSE += 4;
+                y--;
+            } else {
+                d += dE;
+                dSE += 2;
+            }
+            x++;
+            dE += 2;
+            simetria8(x, y, g, x1, y1);
+        }
+
+    }
+    
+    // Funcao auxiliar ao DesenhaCirculoBresenham
+    private void simetria8(int x, int y, Graphics2D g, int xc, int yc) {
+        float contorno = 2f;
+
+        g.fillRect(x + xc, y + yc, (int) contorno, (int) contorno);
+        g.fillRect(-x + xc, y + yc, (int) contorno, (int) contorno);
+        g.fillRect(x + xc, -y + yc, (int) contorno, (int) contorno);
+        g.fillRect(-x + xc, -y + yc, (int) contorno, (int) contorno);
+        g.fillRect(y + xc, x + yc, (int) contorno, (int) contorno);
+        g.fillRect(-y + xc, x + yc, (int) contorno, (int) contorno);
+        g.fillRect(y + xc, -x + yc, (int) contorno, (int) contorno);
+        g.fillRect(-y + xc, -x + yc, (int) contorno, (int) contorno);
+
+    }
+
+    //Desenha label abaixo do vertice
+   
+}

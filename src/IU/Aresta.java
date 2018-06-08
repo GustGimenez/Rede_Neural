@@ -16,12 +16,12 @@ import java.awt.geom.QuadCurve2D;
  */
 public class Aresta {
 
-    private final Vertice origem;
-    private final Vertice destino;
+    private final Neuronio origem;
+    private final Neuronio destino;
     private final ArrayList<String> trans;
     private int tipo;
 
-    public Aresta(Vertice o, Vertice d, int tipo) {
+    public Aresta(Neuronio o, Neuronio d, int tipo) {
         this.origem = o;
         this.destino = d;
         this.tipo = tipo;
@@ -35,11 +35,11 @@ public class Aresta {
     private static final int TIPO_CURVADO_SUPERIOR = 2; // QUANDO EXISTE TRANSICAO IDA E VOLTA
     private static final int TIPO_CURVADO_INFERIOR = 3; // QUANDO EXISTE TRANSICAO IDA E VOLTA
     
-    public Vertice getOrigem() {
+    public Neuronio getOrigem() {
         return origem;
     }
 
-    public Vertice getDestino() {
+    public Neuronio getDestino() {
         return destino;
     }
 

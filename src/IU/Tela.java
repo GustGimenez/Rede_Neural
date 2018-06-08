@@ -5,23 +5,20 @@
  */
 package IU;
 
-
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.geom.Point2D;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.text.BadLocationException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultHighlighter;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -29,28 +26,20 @@ import org.xml.sax.SAXException;
  */
 public class Tela extends javax.swing.JFrame {
 
-    private final Automato grafo;
-    private Vertice vertice;
+    private ArrayList<ArrayList> entradas;
+    private ArrayList<Integer> saidas;
+    private final Automato rede;
+    private Neuronio neuronio;
     private Aresta aresta;
     private ViewPanel view;
     private ViewPanel view2;
     private ViewPanel view3;
 
- 
-    private int camCount;
     private final boolean gr;
     private int auxX, auxY;
     private String strTrans;
-    private int step;
-    private String TPFitaText;
 
     private int op; // 0 - novo estado, 1 -  nova transição, 2 - remover, 3 - arrastar
-
-    private final int NOVO_ESTADO = 0;
-    private final int NOVA_TRANSICAO = 1;
-    private final int REMOVER = 2;
-    private final int ARRASTAR = 3;
-    private final char VAZIO = '\u25A1';
 
     private DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
 
@@ -59,10 +48,10 @@ public class Tela extends javax.swing.JFrame {
         *Deve ser chamado ANTES initComponents
      */
     private void initTela() {
-        this.view = new ViewPanel(grafo);
-        this.view2 = new ViewPanel(grafo);
+        this.view = new ViewPanel(rede);
+        this.view2 = new ViewPanel(rede);
         this.view2.setBackground(Color.white);
-        this.view3 = new ViewPanel(grafo);
+        this.view3 = new ViewPanel(rede);
         this.view3.setBackground(Color.white);
     }
 
@@ -71,19 +60,14 @@ public class Tela extends javax.swing.JFrame {
         *Deve ser chamado DEPOIS initComponents
      */
     private void setComp() {
-        this.InputTable.add(this.CBDirection);
-        this.view.add(this.InputTable);
-        this.InputTable.setVisible(false);
-        this.op = this.NOVO_ESTADO; //começa com novo estado
+
         this.view.setBackground(Color.white);
         this.TelaPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.TelaPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        TableColumn tc = this.InputTable.getColumnModel().getColumn(2);
-        tc.setCellEditor(new DefaultCellEditor(this.CBDirection));
     }
 
     public Tela() {
-        grafo = new Automato();
+        rede = new Automato();
         this.gr = false;
         this.initTela();
         initComponents();
@@ -96,7 +80,7 @@ public class Tela extends javax.swing.JFrame {
      */
     public Tela(Automato a) {
         this.gr = true;
-        this.grafo = a;
+        this.rede = a;
         this.initTela();
         initComponents();
         this.setComp();
@@ -122,15 +106,9 @@ public class Tela extends javax.swing.JFrame {
         PanelAutomato = new javax.swing.JPanel();
         TelaPanel = new javax.swing.JScrollPane(this.view);
         EstadosBtnPanel = new javax.swing.JPanel();
-        novoEstadoButton = new javax.swing.JButton();
-        novaTransButton = new javax.swing.JButton();
-        removerButton = new javax.swing.JButton();
         arrastarButton = new javax.swing.JButton();
-        InputTable = new javax.swing.JTable();
-        CBDirection = new javax.swing.JComboBox<>();
         jMenuBar1 = new javax.swing.JMenuBar();
         File_menu = new javax.swing.JMenu();
-        save_menu = new javax.swing.JMenuItem();
         load_menu = new javax.swing.JMenuItem();
 
         PopUpItem1.setText("Inicial");
@@ -199,28 +177,6 @@ public class Tela extends javax.swing.JFrame {
 
         EstadosBtnPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        novoEstadoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagens/EstadoB.png"))); // NOI18N
-        novoEstadoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                novoEstadoButtonActionPerformed(evt);
-            }
-        });
-
-        novaTransButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagens/transicaoB.png"))); // NOI18N
-        novaTransButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                novaTransButtonActionPerformed(evt);
-            }
-        });
-
-        removerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagens/DeleteB.png"))); // NOI18N
-        removerButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removerButtonActionPerformed(evt);
-            }
-        });
-
-        arrastarButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagens/cursorB.png"))); // NOI18N
         arrastarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 arrastarButtonActionPerformed(evt);
@@ -232,13 +188,7 @@ public class Tela extends javax.swing.JFrame {
         EstadosBtnPanelLayout.setHorizontalGroup(
             EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(EstadosBtnPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(novoEstadoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(novaTransButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(removerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(arrastarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -246,62 +196,9 @@ public class Tela extends javax.swing.JFrame {
             EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(EstadosBtnPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(novoEstadoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(novaTransButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(removerButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(arrastarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(arrastarButton, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                .addContainerGap())
         );
-
-        InputTable.setBackground(new java.awt.Color(204, 204, 204));
-        InputTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"$", null, null}
-            },
-            new String [] {
-                "null", "null", "null"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        InputTable.setGridColor(new java.awt.Color(204, 204, 255));
-        InputTable.getTableHeader().setReorderingAllowed(false);
-        InputTable.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                InputTableFocusLost(evt);
-            }
-        });
-        InputTable.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentHidden(java.awt.event.ComponentEvent evt) {
-                InputTableComponentHidden(evt);
-            }
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                InputTableComponentMoved(evt);
-            }
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                InputTableComponentShown(evt);
-            }
-        });
-        InputTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                InputTablePropertyChange(evt);
-            }
-        });
-        InputTable.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                InputTableKeyTyped(evt);
-            }
-        });
-
-        CBDirection.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "R", "L" }));
-        CBDirection.setSelectedIndex(1);
 
         javax.swing.GroupLayout PanelAutomatoLayout = new javax.swing.GroupLayout(PanelAutomato);
         PanelAutomato.setLayout(PanelAutomatoLayout);
@@ -313,59 +210,24 @@ public class Tela extends javax.swing.JFrame {
                     .addGroup(PanelAutomatoLayout.createSequentialGroup()
                         .addComponent(TelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
                         .addContainerGap())
-                    .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                        .addGap(255, 255, 255)
-                        .addComponent(InputTable, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(CBDirection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         PanelAutomatoLayout.setVerticalGroup(
             PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                .addGap(11, 11, 11)
+                .addContainerGap()
                 .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(InputTable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(200, 248, Short.MAX_VALUE))
-                    .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addContainerGap())))
-            .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(CBDirection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(40, 40, 40)
+                .addComponent(TelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addContainerGap())
         );
-
-        if (InputTable.getColumnModel().getColumnCount() > 0) {
-            InputTable.getColumnModel().getColumn(0).setResizable(false);
-            InputTable.getColumnModel().getColumn(1).setResizable(false);
-            InputTable.getColumnModel().getColumn(2).setResizable(false);
-        }
 
         AutomatoLayout.add(PanelAutomato, "AutomatoEdit");
 
         File_menu.setText("Arquivos");
 
-        save_menu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        save_menu.setText("Salvar");
-        save_menu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                save_menuActionPerformed(evt);
-            }
-        });
-        File_menu.add(save_menu);
-
         load_menu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        load_menu.setText("Carregar");
+        load_menu.setText("Carregar Arquivo de Treinamento");
         load_menu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 load_menuActionPerformed(evt);
@@ -398,69 +260,25 @@ public class Tela extends javax.swing.JFrame {
         try {
             this.view.getS().setLine(0, 0, 0, 0);
             Point p = this.view.getMousePosition();
-            Vertice v = grafo.busca(p.x, p.y);
-
-            if (evt.isPopupTrigger()) {
-                if (this.vertice == null) {
-                    this.PopUpItem1.setEnabled(false);
-                    this.PopUpItem2.setEnabled(false);
-                } else {
-
-                    this.PopUpItem1.setSelected(this.vertice.isInicial());
-                    this.PopUpItem2.setSelected(this.vertice.isFim());
-                    this.PopUpItem1.setEnabled(true);
-                    this.PopUpItem2.setEnabled(true);
-                }
-                this.Menu.show(this.view, p.x, p.y);
-                return;
-            }
-            if (this.op == this.NOVA_TRANSICAO) {//transição
-                if (v == null) {
-                    return;
-                }
-                this.aresta = this.grafo.addAresta(this.vertice, v);
-                if (this.aresta.getTipo() == 4) {
-                    this.auxX = this.vertice.getX() - 114;
-                    if (auxX < 6) {
-                        auxX = 6;
-                    }
-                    this.auxY = this.vertice.getY() + 25;
-
-                } else {
-                    this.auxX = (this.vertice.getX() + p.x) / 2;
-                    if (auxX < 6) {
-                        auxX = 6;
-                    }
-                    this.auxY = (this.vertice.getY() + p.y) / 2 - 10;
-                }
-                this.cleanInput();
-                this.InputTable.setVisible(true);
-                this.InputTable.requestFocus();
-                this.InputTable.editCellAt(0, 0);
-                this.InputTable.changeSelection(0, 0, false, false);
-
-            }
+            Neuronio v = rede.busca(p.x, p.y);
 
         } catch (NullPointerException e) {
 
         } finally {
             this.TelaPanel.updateUI();
-            this.InputTable.setLocation(this.auxX, this.auxY);
         }
     }//GEN-LAST:event_TelaPanelMouseReleased
 
     private void TelaPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TelaPanelMousePressed
         try {
-            if (vertice != null) {
-                this.vertice.setFocus(false);
+            if (neuronio != null) {
+                this.neuronio.setFocus(false);
             }
             Point p = this.view.getMousePosition();
-            if (this.InputTable.isVisible()) {
-                verificaClick(p.x, p.y);
-            }
-            this.vertice = grafo.busca(p.x, p.y);
-            if (vertice != null) {
-                this.vertice.setFocus(true);
+
+            this.neuronio = rede.busca(p.x, p.y);
+            if (neuronio != null) {
+                this.neuronio.setFocus(true);
             }
 
             this.TelaPanel.repaint();
@@ -472,172 +290,98 @@ public class Tela extends javax.swing.JFrame {
     private void TelaPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TelaPanelMouseClicked
         Point p = this.view.getMousePosition();
 
-        if (this.op == this.NOVO_ESTADO) {//novo estado
-            if (this.vertice != null) {
-                return;
-            }
-            this.vertice = new Vertice(p.x, p.y, "q");
-            this.grafo.addVertice(this.vertice);
-
-        }
-        if (this.op == this.REMOVER) {//remove
-            if (this.vertice != null) {
-                if (this.vertice.isInicial()) {
-                    this.grafo.setInicial(null);
-                }
-                this.grafo.removeVertice(this.vertice);
-            } else {
-                this.grafo.removeTransicao(p);
-            }
-            this.grafo.verificaLabel(p);
-        }
         if (evt.getClickCount() == 2) { // verificar edição de estado
-            this.strTrans = this.grafo.getStrTrans(p);
-            this.aresta = this.grafo.getArestas(p);
+            this.strTrans = this.rede.getStrTrans(p);
+            this.aresta = this.rede.getArestas(p);
             if (strTrans != null) {
                 this.auxX = p.x;
                 this.auxY = p.y;
-                this.setInputTable(this.strTrans);
-                this.InputTable.setVisible(true);
-                this.InputTable.requestFocus();
+
             }
         }
         this.TelaPanel.repaint();
     }//GEN-LAST:event_TelaPanelMouseClicked
 
     private void TelaPanelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TelaPanelMouseDragged
-        try {
-            if (this.op == this.ARRASTAR) {//arrastar
 
-                Point p = this.view.getMousePosition();
-
-                if (this.vertice != null) {
-                    this.vertice.setX(p.x);
-                    this.vertice.setY(p.y);
-                }
-
-            } else if (this.vertice != null && this.op == this.NOVA_TRANSICAO) {//transição
-                Point2D p = (Point2D) this.view.getMousePosition();
-                this.view.getS().setLine(p.getX(), p.getY(), vertice.getX(), vertice.getY());
-            }
-
-        } catch (NullPointerException e) {
-
-        } finally {
-            this.view.updateUI();
-        }
     }//GEN-LAST:event_TelaPanelMouseDragged
 
     private void PopUpItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PopUpItem1ActionPerformed
-        if (this.grafo.getInicial() != null) {
-            this.grafo.getInicial().setInicial(false);
-        }
-        this.vertice.setInicial(true);
-        this.grafo.setInicial(this.vertice);
-        this.TelaPanel.repaint();
+
     }//GEN-LAST:event_PopUpItem1ActionPerformed
 
     private void PopUpItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PopUpItem2ActionPerformed
-        this.vertice.setFim(!this.vertice.isFim());
-        this.TelaPanel.repaint();
+
     }//GEN-LAST:event_PopUpItem2ActionPerformed
 
-    private void novoEstadoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novoEstadoButtonActionPerformed
-        this.op = this.NOVO_ESTADO;
-    }//GEN-LAST:event_novoEstadoButtonActionPerformed
-
-    private void novaTransButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novaTransButtonActionPerformed
-        this.op = this.NOVA_TRANSICAO;
-    }//GEN-LAST:event_novaTransButtonActionPerformed
-
-    private void removerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerButtonActionPerformed
-        this.op = this.REMOVER;
-    }//GEN-LAST:event_removerButtonActionPerformed
-
     private void arrastarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arrastarButtonActionPerformed
-        this.op = this.ARRASTAR;
     }//GEN-LAST:event_arrastarButtonActionPerformed
 
     private void CriarLabel_PopUpItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CriarLabel_PopUpItem3ActionPerformed
-        // TODO add your handling code here:
-        String label = JOptionPane.showInputDialog("Insira o label!");
-        this.grafo.criarLabel(label, this.vertice);
-        this.TelaPanel.repaint();
+
     }//GEN-LAST:event_CriarLabel_PopUpItem3ActionPerformed
 
-    private void InputTableComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_InputTableComponentShown
-
-
-    }//GEN-LAST:event_InputTableComponentShown
-
-    private void InputTableComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_InputTableComponentMoved
-        int x = this.InputTable.getLocation().x;
-        int y = this.InputTable.getLocation().y;
-        if (x == 5 && y == 5) {
-            this.InputTable.setLocation(this.auxX, this.auxY);
-        }
-
-
-    }//GEN-LAST:event_InputTableComponentMoved
-
-    private void InputTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_InputTablePropertyChange
-        // TODO add your handling code here:
-    }//GEN-LAST:event_InputTablePropertyChange
-
-    private void InputTableFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_InputTableFocusLost
-        //    this.InputTable.setVisible(false);
-    }//GEN-LAST:event_InputTableFocusLost
-
-    private void InputTableComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_InputTableComponentHidden
-        if (this.aresta == null) {
-            return;
-        }
-        String texto;
-
-        //Pega os valores da tabela, ignorando espacos
-        String text1 = ((String) this.InputTable.getValueAt(0, 0)).trim();
-        String text2 = ((String) this.InputTable.getValueAt(0, 1)).trim();
-        String text3 = ((String) this.InputTable.getValueAt(0, 2)).trim();
-
-        //substitui vazio por caracter quadrado
-        if (text1 == null || text1.equals("")) {
-            text1 = "\u25A1";
-        }
-        if (text2 == null || text2.equals("")) {
-            text2 = "\u25A1";
-        }
-
-        //Default de andamento da fita: Direita
-        if (text3 == null || text3.equals("")) {
-            text3 = "R";
-        }
-
-        //Forma string que será armazenada. Apenas 1 caractere por campo
-        texto = text1.charAt(0) + ";" + text2.charAt(0) + ";" + text3.charAt(0);
-
-        this.aresta.addTransicao(texto, this.strTrans);
-        this.TelaPanel.repaint();
-        this.strTrans = null;
-    }//GEN-LAST:event_InputTableComponentHidden
-
-    private void InputTableKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_InputTableKeyTyped
-        if ((int) evt.getKeyChar() == 27) {// digitou esc
-            this.verificaClick(0, 0); //Esconde tela
-        }
-    }//GEN-LAST:event_InputTableKeyTyped
-
     private void TelaPanelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TelaPanelKeyTyped
-        if ((int) evt.getKeyChar() == 27) {
-            this.verificaClick(0, 0);
-        }
+
     }//GEN-LAST:event_TelaPanelKeyTyped
 
-    private void save_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save_menuActionPerformed
-        
-    }//GEN-LAST:event_save_menuActionPerformed
-
     private void load_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_menuActionPerformed
-    
+        int numEntradas;
+        String aux, line;
+
+        JFileChooser jc = new JFileChooser("D:\\Users\\Gi\\Desktop\\Desktop\\BCC\\7SEMESTRE\\PDI\\Tarefas");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV", "csv");
+        jc.setFileFilter(filter);
+        int result;
+        result = jc.showOpenDialog(null);
+
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+
+            this.entradas = new ArrayList();
+            this.saidas = new ArrayList();
+
+            BufferedReader in = null;
+            try {
+                String filename = jc.getSelectedFile().getAbsolutePath();
+                in = new BufferedReader(new FileReader(filename));
+                
+                line = in.readLine();
+                StringTokenizer t1 = new StringTokenizer(line, ",");
+                
+                aux = t1.nextToken();
+               while(t1.hasMoreTokens()){
+                    aux = t1.nextToken();
+                    this.entradas.add(new ArrayList());
+                }
+
+                numEntradas = this.entradas.size();
+
+                while (in.ready()) {
+                    line = in.readLine();
+                    t1 = new StringTokenizer(line, ",");
+                    
+                    for (int i = 0; i < numEntradas; i++) {
+                        aux = t1.nextToken();
+                        this.entradas.get(i).add(Integer.parseInt(aux));                        
+                    }
+                    aux = t1.nextToken();
+                    this.saidas.add(Integer.parseInt(aux));                    
+                }
+                System.out.println("aqui");
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
     }//GEN-LAST:event_load_menuActionPerformed
 
     /**
@@ -652,45 +396,14 @@ public class Tela extends javax.swing.JFrame {
 
     }
 
-    private void verificaClick(int x, int y) {
-        int tableX, tableY;
-
-        tableX = this.InputTable.getLocation().x;
-        tableY = this.InputTable.getLocation().y;
-
-        if (x < tableX || x > tableX + 225 || y < tableY || y > tableY + 16) {
-            if (this.InputTable.isEditing()) {
-                this.InputTable.getCellEditor().stopCellEditing();
-            }
-            this.InputTable.setVisible(false);
-        }
-    }
-
-    private void cleanInput() {
-        this.InputTable.setValueAt("", 0, 0);
-        this.InputTable.setValueAt("", 0, 1);
-        this.InputTable.setValueAt("R", 0, 2);
-    }
-
-    private void setInputTable(String strTrans) {
-        String[] aux;
-
-        aux = strTrans.split(";");
-        this.InputTable.setValueAt(aux[0], 0, 0);
-        this.InputTable.setValueAt(aux[1], 0, 1);
-        this.InputTable.setValueAt(aux[2], 0, 2);
-    }
-
     public class MeuPanel extends javax.swing.JPanel {
 
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel AutomatoLayout;
-    private javax.swing.JComboBox<String> CBDirection;
     private javax.swing.JMenuItem CriarLabel_PopUpItem3;
     private javax.swing.JPanel EstadosBtnPanel;
     private javax.swing.JMenu File_menu;
-    private javax.swing.JTable InputTable;
     private javax.swing.JPopupMenu Menu;
     private javax.swing.JPanel PanelAutomato;
     private javax.swing.JCheckBoxMenuItem PopUpItem1;
@@ -701,9 +414,5 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JMenuItem load_menu;
-    private javax.swing.JButton novaTransButton;
-    private javax.swing.JButton novoEstadoButton;
-    private javax.swing.JButton removerButton;
-    private javax.swing.JMenuItem save_menu;
     // End of variables declaration//GEN-END:variables
 }
