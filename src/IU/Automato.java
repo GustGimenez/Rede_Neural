@@ -17,16 +17,16 @@ import java.util.ArrayList;
  */
 public class Automato {
 
-    ArrayList<Vertice> vertices;
+    ArrayList<Neuronio> vertices;
     ArrayList<Aresta> arestas;
-    private Vertice Inicial; // Mantém o inicial para ser mais facilmente manipulado
+    private Neuronio Inicial; // Mantém o inicial para ser mais facilmente manipulado
 
     public Automato() {
         this.vertices = new ArrayList();
         this.arestas = new ArrayList();
     }
 
-    public ArrayList<Vertice> getVertices() {
+    public ArrayList<Neuronio> getNeuronios() {
         return vertices;
     }
 
@@ -40,16 +40,16 @@ public class Automato {
     }
 
     // Seta um novo vertice inicial
-    public void setInicial(Vertice Inicial) {
+    public void setInicial(Neuronio Inicial) {
         this.Inicial = Inicial;
     }
 
     // Retona o objeto vertice inicial
-    public Vertice getInicial() {
+    public Neuronio getInicial() {
         return Inicial;
     }
 
-    public void addVertice(Vertice v) {
+    public void addNeuronio(Neuronio v) {
 
         this.vertices.add(v);
         int num = vertices.size();
@@ -57,7 +57,7 @@ public class Automato {
         int passo = 255 / num;
         int i = 0;
 
-        for (Vertice v1 : vertices) {
+        for (Neuronio v1 : vertices) {
             v1.setColor(Color.BLACK);
             i++;
         }
@@ -96,7 +96,7 @@ public class Automato {
             float minY = vertices.get(0).getY();
 
             //Encontra o maior e menor valores para X e Y
-            for (Vertice v : this.vertices) {
+            for (Neuronio v : this.vertices) {
                 if (maxX < v.getX()) {
                     maxX = v.getX();
                 } else if (minX > v.getX()) {
@@ -122,7 +122,7 @@ public class Automato {
 
     public Dimension getDimensao() {
         int x = 0, y = 0;
-        for (Vertice v : vertices) {
+        for (Neuronio v : vertices) {
             if (v.getX() > x) {
                 x = v.getX();
             }
@@ -138,7 +138,7 @@ public class Automato {
     // Normaliza os estados apos uma alteração (remoção de um estado)
     private void setEstados() {
         int i = 0;
-        for (Vertice v : vertices) {
+        for (Neuronio v : vertices) {
             v.setEstado("q" + i++);
             v.setPos(i);
         }
@@ -147,7 +147,7 @@ public class Automato {
     // Normaliza as posições do vertice de acordo com ArrayList
     public void setPos() {
         int i = 0;
-        for (Vertice v : vertices) {
+        for (Neuronio v : vertices) {
             v.setPos(i++);
         }
     }
@@ -156,8 +156,8 @@ public class Automato {
     *@arg estado posição do estado que está sendo selecionado
     Seta estado como selecionado e retorna para que possa ser manipulado
      */
-    public Vertice setSelected(int estado) {
-        Vertice v = this.vertices.get(estado);
+    public Neuronio setSelected(int estado) {
+        Neuronio v = this.vertices.get(estado);
         v.setFocus(true);
         return v;
     }
@@ -182,7 +182,7 @@ public class Automato {
     }
 
     public void draw(Graphics2D g) {
-        for (Vertice v : vertices) {
+        for (Neuronio v : vertices) {
             v.desenha(g);
         }
 
@@ -192,10 +192,10 @@ public class Automato {
 
     }
 
-    public Vertice busca(int x, int y) {
+    public Neuronio busca(int x, int y) {
         int x1, y1, r;
         r = 20;
-        for (Vertice v : vertices) {
+        for (Neuronio v : vertices) {
             x1 = Math.abs(v.getX() - x);
             y1 = Math.abs(v.getY() - y);
 
@@ -206,18 +206,18 @@ public class Automato {
         return null;
     }
 
-    public Aresta addAresta(Vertice v1, Vertice v2) {
+    public Aresta addAresta(Neuronio v1, Neuronio v2) {
         for (Aresta a : arestas) {
-            Vertice vo = a.getOrigem();
-            Vertice vd = a.getDestino();
+            Neuronio vo = a.getOrigem();
+            Neuronio vd = a.getDestino();
 
             if (v1.equals(vo) && v2.equals(vd)) {
                 return a;
             }
         }
         for (Aresta a : arestas) {
-            Vertice vo = a.getOrigem();
-            Vertice vd = a.getDestino();
+            Neuronio vo = a.getOrigem();
+            Neuronio vd = a.getDestino();
             if (v2.equals(vo) && v1.equals(vd)) {
                 a.setTipo(2);
                 Aresta a1 = new Aresta(v1, v2, 3);
@@ -254,28 +254,9 @@ public class Automato {
         }
     }
 
-    public void verificaLabel(Point p) {
-        int yC, yB, xD, xE;
-        int largura;
-        for (Vertice v : this.vertices) {
-            if (v.getLabel() != null) {
-                largura = v.getLabel().length() * 5 + 15;
-                yC = v.getY() + v.getRaio();
-                xD = v.getX() + v.getRaio() + largura / 2;
-                yB = v.getY() + v.getRaio() + 15;
-                xE = v.getX() - v.getRaio() - largura / 2;
+   
 
-                if (p.getX() >= xE && p.getX() <= xD) {
-                    if (p.getY() >= yC && p.getY() <= yB) {
-                        v.setLabel(null);
-                    }
-                }
-            }//Verifica se tem label
-
-        }
-    }
-
-    public void removeVertice(Vertice vertice) {
+    public void removeNeuronio(Neuronio vertice) {
         int num = this.arestas.size();
         Aresta a;
         for (int i = 0; i < num; i++) {
@@ -294,7 +275,7 @@ public class Automato {
     Pega as transições de v1 para os outros vertices e copia para v2
     ou seja, para cada transição de v1 para vx, cria uma transição v2 para vx
      */
-    private void copiaTrans(Vertice v1, Vertice vc) {
+    private void copiaTrans(Neuronio v1, Neuronio vc) {
         for (int i = 0; i < this.arestas.size(); i++) {
             Aresta a = this.arestas.get(i);
             if (a.getOrigem().equals(v1)) {
@@ -308,84 +289,12 @@ public class Automato {
 
     // nome auto explicativo
     private void resetVisita() {
-        for (Vertice v : this.vertices) {
+        for (Neuronio v : this.vertices) {
             v.setVisitado(false);
         }
     }
 
-    //verifica se existe uma transição vazia saindo de v
-    private boolean tranVazia(Vertice v) {
-        for (Aresta a : this.arestas) {
-            if (a.getOrigem().equals(v)) {
-                ArrayList<String> trans = a.getTrans();
-                for (String s : trans) {
-                    if (s.charAt(0) == '\u25A1') {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+    
 
-    // dada uma aresta, verificar qual posição da aresta corresponde a transição vazia
-    // retorna -1 em caso não exista tal transição
-    private int tranVazia(Aresta a, int i) {
-        for (; i < a.getTrans().size(); i++) {
-            String c = a.getTrans().get(i);
-            if (c.charAt(0) == '\u25A1') {
-                return i;
-
-            }
-            i++;
-        }
-        return -1;
-    }
-
-    //remove transição vazia de um vertice
-    private void removeVazio(Vertice v) {
-        if (v.isVisitado()) {
-            return;
-        }
-        v.setVisitado(true);
-        if (!this.tranVazia(v)) {
-            return;
-        }
-        int k = 0;
-        for (int i = 0; i < this.arestas.size(); i++) {
-            Aresta a = this.arestas.get(i);
-            if (a.getOrigem().equals(v)) {
-                k = this.tranVazia(this.arestas.get(i), k);
-                if (k != -1) {
-                    removeVazio(a.getDestino());
-                    this.copiaTrans(a.getDestino(), v);
-                    a.getTrans().remove(k);
-                    if (a.getTrans().isEmpty()) {
-                        this.arestas.remove(a);
-                        i--;
-                    }
-                    v.setFim(a.getDestino().isFim());
-                }
-                k = 0;
-            }
-        }
-    }
-
-    // Remove transições vazias (Função de automatos) de todos os vertices
-    public void removeVazio() {
-        this.resetVisita();
-        for (Vertice v : this.vertices) {
-            this.removeVazio(v);
-        }
-    }
-
-    // Cria label de descrição para um vertice
-    public void criarLabel(String label, Vertice vertice) {
-        for (int i = 0; i < this.vertices.size(); i++) {
-            if (this.vertices.get(i).equals(vertice)) {
-                this.vertices.get(i).setLabel(label);
-            }
-        }
-    }
 
 }
