@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultHighlighter;
@@ -27,7 +28,7 @@ import rede_neural.Rede;
  */
 public class Tela extends javax.swing.JFrame {
 
-    private ArrayList<ArrayList> entradas;
+    private int[][] entradas;
     private ArrayList<Integer> saidas;
     private Automato rede;
     private Neuronio neuronio;
@@ -78,7 +79,8 @@ public class Tela extends javax.swing.JFrame {
         this.initTela();
         initComponents();
         this.setComp();
-
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setVisible(true);
     }
 
     /*
@@ -197,7 +199,7 @@ public class Tela extends javax.swing.JFrame {
         EstadosBtnPanelLayout.setHorizontalGroup(
             EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(EstadosBtnPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(704, Short.MAX_VALUE)
                 .addComponent(arrastarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -214,14 +216,14 @@ public class Tela extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Neurônios", "Pesos"
+                "Neurônios", "Pesos", "Ligado"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Double.class
+                java.lang.String.class, java.lang.Double.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true
+                false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -240,13 +242,13 @@ public class Tela extends javax.swing.JFrame {
             PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelAutomatoLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                        .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 16, Short.MAX_VALUE))
+                        .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         PanelAutomatoLayout.setVerticalGroup(
             PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -286,7 +288,7 @@ public class Tela extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(AutomatoLayout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 793, Short.MAX_VALUE)
+            .addComponent(AutomatoLayout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -372,7 +374,8 @@ public class Tela extends javax.swing.JFrame {
         int numEntradas;
         int numSaidas = 0;
         String aux, line;
-
+        ArrayList<ArrayList> entradas;
+        
         JFileChooser jc = new JFileChooser("D:\\Users\\Gi\\Desktop\\Desktop\\BCC\\7SEMESTRE\\IA");
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV", "csv");
         jc.setFileFilter(filter);
@@ -381,7 +384,7 @@ public class Tela extends javax.swing.JFrame {
 
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
 
-            this.entradas = new ArrayList();
+            entradas = new ArrayList();
             this.saidas = new ArrayList();
 
             BufferedReader in = null;
@@ -395,10 +398,10 @@ public class Tela extends javax.swing.JFrame {
                 aux = t1.nextToken();
                 while (t1.hasMoreTokens()) {
                     aux = t1.nextToken();
-                    this.entradas.add(new ArrayList());
+                    entradas.add(new ArrayList());
                 }
 
-                numEntradas = this.entradas.size();
+                numEntradas = entradas.size();
 
                 while (in.ready()) {
                     line = in.readLine();
@@ -406,7 +409,7 @@ public class Tela extends javax.swing.JFrame {
 
                     for (int i = 0; i < numEntradas; i++) {
                         aux = t1.nextToken();
-                        this.entradas.get(i).add(Integer.parseInt(aux));
+                        entradas.get(i).add(Integer.parseInt(aux));
                     }
                     aux = t1.nextToken();
                     if (!this.saidas.contains(Integer.parseInt(aux))) {
@@ -416,7 +419,7 @@ public class Tela extends javax.swing.JFrame {
 
                 }
                 this.r = new Rede(numEntradas, numSaidas);
-                
+
                 criarRede();
 
             } catch (FileNotFoundException ex) {
@@ -438,34 +441,34 @@ public class Tela extends javax.swing.JFrame {
         int qtdEntrada = this.r.getQtdEntrada();
         int qtdSaida = this.r.getQtdSaida();
         int qtdOculta = this.r.getQtdOculta();
-        
+
         // Criando os neurônios
         for (int i = 1; i <= qtdEntrada; i++) {
             Neuronio n = new Neuronio(50, i * 100, "e" + i, ENTRADA);
             this.rede.addNeuronio(n);
         }
-        
+
         // Criando os neuronios da camada de saída, e setando os seus pesos
         for (int i = 1; i <= qtdSaida; i++) {
             Neuronio n = new Neuronio(450, i * 100, "s" + i, SAIDA);
             this.rede.addNeuronio(n);
             double[] pesos = new double[qtdOculta];
-            
+
             for (int j = 0; j < qtdOculta; j++) {
                 pesos[j] = Math.random();
             }
             n.setPeso(pesos);
         }
-        
+
         // Criando os neuronios da camada de saída, e setando os seus pesos
         for (int i = 1; i <= qtdOculta; i++) {
             Neuronio n = new Neuronio(250, i * 100, "o" + i, OCULTA);
             double[] pesos = new double[qtdEntrada];
-            
+
             for (int j = 0; j < qtdEntrada; j++) {
                 pesos[j] = Math.random();
             }
-            
+
             n.setPeso(pesos);
             this.rede.addNeuronio(n);
         }
@@ -488,7 +491,6 @@ public class Tela extends javax.swing.JFrame {
 
         this.TelaPanel.repaint();
     }
-
 
     /**
      * @param args the command line arguments
