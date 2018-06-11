@@ -435,19 +435,38 @@ public class Tela extends javax.swing.JFrame {
     }//GEN-LAST:event_load_menuActionPerformed
 
     public void criarRede() {
-        for (int i = 1; i <= this.r.getQtdEntrada(); i++) {
+        int qtdEntrada = this.r.getQtdEntrada();
+        int qtdSaida = this.r.getQtdSaida();
+        int qtdOculta = this.r.getQtdOculta();
+        
+        // Criando os neurônios
+        for (int i = 1; i <= qtdEntrada; i++) {
             Neuronio n = new Neuronio(50, i * 100, "e" + i, ENTRADA);
             this.rede.addNeuronio(n);
         }
-        for (int i = 1; i <= this.r.getQtdSaida(); i++) {
+        
+        // Criando os neuronios da camada de saída, e setando os seus pesos
+        for (int i = 1; i <= qtdSaida; i++) {
             Neuronio n = new Neuronio(450, i * 100, "s" + i, SAIDA);
             this.rede.addNeuronio(n);
-            n.setPeso(Math.random());
-            this.rede.addNeuronio(n);
+            double[] pesos = new double[qtdOculta];
+            
+            for (int j = 0; j < qtdOculta; j++) {
+                pesos[j] = Math.random();
+            }
+            n.setPeso(pesos);
         }
-        for (int i = 1; i <= this.r.getQtdOculta(); i++) {
+        
+        // Criando os neuronios da camada de saída, e setando os seus pesos
+        for (int i = 1; i <= qtdOculta; i++) {
             Neuronio n = new Neuronio(250, i * 100, "o" + i, OCULTA);
-            n.setPeso(Math.random());
+            double[] pesos = new double[qtdEntrada];
+            
+            for (int j = 0; j < qtdEntrada; j++) {
+                pesos[j] = Math.random();
+            }
+            
+            n.setPeso(pesos);
             this.rede.addNeuronio(n);
         }
 
@@ -466,7 +485,6 @@ public class Tela extends javax.swing.JFrame {
                 }
             }
         }
-        System.out.println("aqui");
 
         this.TelaPanel.repaint();
     }
