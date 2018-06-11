@@ -19,6 +19,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultHighlighter;
+import rede_neural.Rede;
 
 /**
  *
@@ -28,12 +29,17 @@ public class Tela extends javax.swing.JFrame {
 
     private ArrayList<ArrayList> entradas;
     private ArrayList<Integer> saidas;
-    private final Automato rede;
+    private Automato rede;
     private Neuronio neuronio;
     private Aresta aresta;
+    private Rede r;
     private ViewPanel view;
     private ViewPanel view2;
     private ViewPanel view3;
+
+    private final int ENTRADA = 0;
+    private final int OCULTA = 1;
+    private final int SAIDA = 2;
 
     private final boolean gr;
     private int auxX, auxY;
@@ -107,9 +113,12 @@ public class Tela extends javax.swing.JFrame {
         TelaPanel = new javax.swing.JScrollPane(this.view);
         EstadosBtnPanel = new javax.swing.JPanel();
         arrastarButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         File_menu = new javax.swing.JMenu();
         load_menu = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
 
         PopUpItem1.setText("Inicial");
         PopUpItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -200,17 +209,44 @@ public class Tela extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Neurônios", "Pesos"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
         javax.swing.GroupLayout PanelAutomatoLayout = new javax.swing.GroupLayout(PanelAutomato);
         PanelAutomato.setLayout(PanelAutomatoLayout);
         PanelAutomatoLayout.setHorizontalGroup(
             PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelAutomatoLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                        .addComponent(TelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 16, Short.MAX_VALUE))
         );
         PanelAutomatoLayout.setVerticalGroup(
             PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,7 +254,11 @@ public class Tela extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
-                .addComponent(TelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(PanelAutomatoLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -237,13 +277,16 @@ public class Tela extends javax.swing.JFrame {
 
         jMenuBar1.add(File_menu);
 
+        jMenu1.setText("Rede");
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(AutomatoLayout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(AutomatoLayout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 793, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,13 +334,13 @@ public class Tela extends javax.swing.JFrame {
         Point p = this.view.getMousePosition();
 
         if (evt.getClickCount() == 2) { // verificar edição de estado
-            this.strTrans = this.rede.getStrTrans(p);
-            this.aresta = this.rede.getArestas(p);
-            if (strTrans != null) {
-                this.auxX = p.x;
-                this.auxY = p.y;
-
-            }
+//            this.strTrans = this.rede.getStrTrans(p);
+//            this.aresta = this.rede.getArestas(p);
+//            if (strTrans != null) {
+//                this.auxX = p.x;
+//                this.auxY = p.y;
+//
+//            }
         }
         this.TelaPanel.repaint();
     }//GEN-LAST:event_TelaPanelMouseClicked
@@ -327,9 +370,10 @@ public class Tela extends javax.swing.JFrame {
 
     private void load_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_menuActionPerformed
         int numEntradas;
+        int numSaidas = 0;
         String aux, line;
 
-        JFileChooser jc = new JFileChooser("D:\\Users\\Gi\\Desktop\\Desktop\\BCC\\7SEMESTRE\\PDI\\Tarefas");
+        JFileChooser jc = new JFileChooser("D:\\Users\\Gi\\Desktop\\Desktop\\BCC\\7SEMESTRE\\IA");
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV", "csv");
         jc.setFileFilter(filter);
         int result;
@@ -344,12 +388,12 @@ public class Tela extends javax.swing.JFrame {
             try {
                 String filename = jc.getSelectedFile().getAbsolutePath();
                 in = new BufferedReader(new FileReader(filename));
-                
+
                 line = in.readLine();
                 StringTokenizer t1 = new StringTokenizer(line, ",");
-                
+
                 aux = t1.nextToken();
-               while(t1.hasMoreTokens()){
+                while (t1.hasMoreTokens()) {
                     aux = t1.nextToken();
                     this.entradas.add(new ArrayList());
                 }
@@ -359,15 +403,21 @@ public class Tela extends javax.swing.JFrame {
                 while (in.ready()) {
                     line = in.readLine();
                     t1 = new StringTokenizer(line, ",");
-                    
+
                     for (int i = 0; i < numEntradas; i++) {
                         aux = t1.nextToken();
-                        this.entradas.get(i).add(Integer.parseInt(aux));                        
+                        this.entradas.get(i).add(Integer.parseInt(aux));
                     }
                     aux = t1.nextToken();
-                    this.saidas.add(Integer.parseInt(aux));                    
+                    if (!this.saidas.contains(Integer.parseInt(aux))) {
+                        numSaidas++;
+                    }
+                    this.saidas.add(Integer.parseInt(aux));
+
                 }
-                System.out.println("aqui");
+                this.r = new Rede(numEntradas, numSaidas);
+                
+                criarRede();
 
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
@@ -383,6 +433,44 @@ public class Tela extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_load_menuActionPerformed
+
+    public void criarRede() {
+        for (int i = 1; i <= this.r.getQtdEntrada(); i++) {
+            Neuronio n = new Neuronio(50, i * 100, "e" + i, ENTRADA);
+            this.rede.addNeuronio(n);
+        }
+        for (int i = 1; i <= this.r.getQtdSaida(); i++) {
+            Neuronio n = new Neuronio(450, i * 100, "s" + i, SAIDA);
+            this.rede.addNeuronio(n);
+            n.setPeso(Math.random());
+            this.rede.addNeuronio(n);
+        }
+        for (int i = 1; i <= this.r.getQtdOculta(); i++) {
+            Neuronio n = new Neuronio(250, i * 100, "o" + i, OCULTA);
+            n.setPeso(Math.random());
+            this.rede.addNeuronio(n);
+        }
+
+        for (Neuronio nIni : this.rede.getNeuronios()) {
+            for (Neuronio nFim : this.rede.getNeuronios()) {
+                if (nIni.getTipo() == ENTRADA) {
+                    if (nFim.getTipo() == OCULTA) {
+                        Aresta a = new Aresta(nIni, nFim);
+                        this.rede.addAresta(a);
+                    }
+                } else if (nIni.getTipo() == OCULTA) {
+                    if (nFim.getTipo() == SAIDA) {
+                        Aresta a = new Aresta(nIni, nFim);
+                        this.rede.addAresta(a);
+                    }
+                }
+            }
+        }
+        System.out.println("aqui");
+
+        this.TelaPanel.repaint();
+    }
+
 
     /**
      * @param args the command line arguments
@@ -411,8 +499,11 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JScrollPane TelaPanel;
     private javax.swing.JButton arrastarButton;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JMenuItem load_menu;
     // End of variables declaration//GEN-END:variables
 }

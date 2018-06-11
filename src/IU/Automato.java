@@ -52,41 +52,31 @@ public class Automato {
     public void addNeuronio(Neuronio v) {
 
         this.vertices.add(v);
-        int num = vertices.size();
-        v.setEstado(v.getEstado() + (num - 1));
-        int passo = 255 / num;
-        int i = 0;
 
-        for (Neuronio v1 : vertices) {
-            v1.setColor(Color.BLACK);
-            i++;
-        }
     }
 
     // retona a string de uma transição que foi clicada
-    public String getStrTrans(Point p) {
-        String str;
-        for (Aresta a : this.arestas) {
-            str = a.editaTransicao(p);
-            if (str != null) {
-                return str;
-            }
-        }
-        return null;
-    }
-
+//    public String getStrTrans(Point p) {
+//        String str;
+//        for (Aresta a : this.arestas) {
+//            str = a.editaTransicao(p);
+//            if (str != null) {
+//                return str;
+//            }
+//        }
+//        return null;
+//    }
     //retorna uma aresta que foi clicada
-    public Aresta getArestas(Point p) {
-        String str;
-        for (Aresta a : this.arestas) {
-            str = a.editaTransicao(p);
-            if (str != null) {
-                return a;
-            }
-        }
-        return null;
-    }
-
+//    public Aresta getArestas(Point p) {
+//        String str;
+//        for (Aresta a : this.arestas) {
+//            str = a.editaTransicao(p);
+//            if (str != null) {
+//                return a;
+//            }
+//        }
+//        return null;
+//    }
     // Retorna uma dimensão baseado nos vertices mais distantes em relação a origem
     public java.awt.Dimension getSize() {
         if (this.vertices.size() > 0) {
@@ -163,24 +153,23 @@ public class Automato {
     }
 
     // Percorre as transições para recuperar o alfabeto
-    public ArrayList<Character> getAlfabeto() {
-        ArrayList<Character> alfa = new ArrayList();
-
-        for (Aresta a : arestas) {
-            for (String s : a.getTrans()) {
-                String[] arrayStr = s.split(";");
-                if (!alfa.contains(arrayStr[0].charAt(0))) {
-                    alfa.add(arrayStr[0].charAt(0));
-                }
-                if (!alfa.contains(arrayStr[1].charAt(0))) {
-                    alfa.add(arrayStr[1].charAt(0));
-                }
-            }
-        }
-
-        return alfa;
-    }
-
+//    public ArrayList<Character> getAlfabeto() {
+//        ArrayList<Character> alfa = new ArrayList();
+//
+//        for (Aresta a : arestas) {
+//            for (String s : a.getTrans()) {
+//                String[] arrayStr = s.split(";");
+//                if (!alfa.contains(arrayStr[0].charAt(0))) {
+//                    alfa.add(arrayStr[0].charAt(0));
+//                }
+//                if (!alfa.contains(arrayStr[1].charAt(0))) {
+//                    alfa.add(arrayStr[1].charAt(0));
+//                }
+//            }
+//        }
+//
+//        return alfa;
+//    }
     public void draw(Graphics2D g) {
         for (Neuronio v : vertices) {
             v.desenha(g);
@@ -206,55 +195,27 @@ public class Automato {
         return null;
     }
 
-    public Aresta addAresta(Neuronio v1, Neuronio v2) {
-        for (Aresta a : arestas) {
-            Neuronio vo = a.getOrigem();
-            Neuronio vd = a.getDestino();
-
-            if (v1.equals(vo) && v2.equals(vd)) {
-                return a;
-            }
-        }
-        for (Aresta a : arestas) {
-            Neuronio vo = a.getOrigem();
-            Neuronio vd = a.getDestino();
-            if (v2.equals(vo) && v1.equals(vd)) {
-                a.setTipo(2);
-                Aresta a1 = new Aresta(v1, v2, 3);
-                this.arestas.add(a1);
-                return a1;
-            }
-
-        }
-        Aresta a;
-        if (v1.equals(v2)) {
-            a = new Aresta(v1, v2, 4);
-        } else {
-            a = new Aresta(v1, v2, 1);
-        }
+    public void addAresta(Aresta a) {
         this.arestas.add(a);
-        return a;
     }
 
-    public void removeTransicao(Point p) {
-        for (Aresta a : this.arestas) {
-            if (a.excluiTransicao(p)) {
-                if (a.getTrans().size() == 0) {
-                    if (a.getTipo() == 2 || a.getTipo() == 3) {
-                        for (Aresta a1 : arestas) {
-                            if (a1.getOrigem().equals(a.getDestino()) && a1.getDestino().equals(a.getOrigem())) {
-                                a1.setTipo(1);
-                            }
-                        }
-                    }
-                    this.arestas.remove(a);
-                }
-                return;
-            }
-        }
-    }
-
-   
+//    public void removeTransicao(Point p) {
+//        for (Aresta a : this.arestas) {
+//            if (a.excluiTransicao(p)) {
+//                if (a.getTrans().size() == 0) {
+//                    if (a.getTipo() == 2 || a.getTipo() == 3) {
+//                        for (Aresta a1 : arestas) {
+//                            if (a1.getOrigem().equals(a.getDestino()) && a1.getDestino().equals(a.getOrigem())) {
+//                                a1.setTipo(1);
+//                            }
+//                        }
+//                    }
+//                    this.arestas.remove(a);
+//                }
+//                return;
+//            }
+//        }
+//    }
 
     public void removeNeuronio(Neuronio vertice) {
         int num = this.arestas.size();
@@ -275,17 +236,17 @@ public class Automato {
     Pega as transições de v1 para os outros vertices e copia para v2
     ou seja, para cada transição de v1 para vx, cria uma transição v2 para vx
      */
-    private void copiaTrans(Neuronio v1, Neuronio vc) {
-        for (int i = 0; i < this.arestas.size(); i++) {
-            Aresta a = this.arestas.get(i);
-            if (a.getOrigem().equals(v1)) {
-                Aresta a2 = this.addAresta(vc, a.getDestino());
-                for (String s : a.getTrans()) {
-                    a2.addTransicao(s, null);
-                }
-            }
-        }
-    }
+//    private void copiaTrans(Neuronio v1, Neuronio vc) {
+//        for (int i = 0; i < this.arestas.size(); i++) {
+//            Aresta a = this.arestas.get(i);
+//            if (a.getOrigem().equals(v1)) {
+//                Aresta a2 = this.addAresta(vc, a.getDestino());
+//                for (String s : a.getTrans()) {
+//                    a2.addTransicao(s, null);
+//                }
+//            }
+//        }
+//    }
 
     // nome auto explicativo
     private void resetVisita() {
@@ -293,8 +254,5 @@ public class Automato {
             v.setVisitado(false);
         }
     }
-
-    
-
 
 }
