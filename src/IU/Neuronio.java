@@ -20,21 +20,32 @@ public class Neuronio {
     private String estado; // oque será escrito no centro do circulo
     private boolean focus; // desenha com cor diferente
     private Color cor;  // cor padrão do contorno
-    private float peso;
+    private double peso;
     private int tipo; //0 - entrada, 1- oculta, 2 - saida
 
     private int pos; // posição no ArrayList da maquina
     private boolean visitado; // auxiliar
 
     // Gets e Sets e construtor
-    public Neuronio(int x, int y, String estado) {
+    public Neuronio(int x, int y, String estado, int tipo) {
         this.raio = 20;
         this.x = x;
         this.y = y;
         this.estado = estado;
+        this.tipo = tipo;
         this.focus = false;
        
     }
+
+    public int getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
+    
+    
 
     public Color getCor() {
         return cor;
@@ -44,11 +55,11 @@ public class Neuronio {
         this.cor = cor;
     }
 
-    public float getPeso() {
+    public double getPeso() {
         return peso;
     }
 
-    public void setPeso(float peso) {
+    public void setPeso(double peso) {
         this.peso = peso;
     }
     
@@ -126,18 +137,22 @@ public class Neuronio {
     //Desenho
     public void desenha(Graphics2D g) {
         if (this.focus) { // cor se está sendo focado
-            g.setColor(Color.cyan);
+            g.setColor(Color.GREEN);
         } else { // cor padrão do circulo interno
-            g.setColor(Color.yellow);
+            g.setColor(Color.orange);
         }
         g.fillOval(x - raio, y - raio, raio * 2, raio * 2);
 
-        g.setColor(this.cor); // cor da borda
+        g.setColor(Color.BLACK); // cor da borda
         // borda simples
             g.setStroke(new java.awt.BasicStroke(3f));
             g.drawOval(x - raio, y - raio, raio * 2, raio * 2);
         
         g.drawString(this.estado, this.x - 4, this.y + 4);
+        
+//        if(this.tipo != 0){
+//            g.drawString(""+this.peso, this.x - 4, this.y - 10);
+//        }
 
     }
     
