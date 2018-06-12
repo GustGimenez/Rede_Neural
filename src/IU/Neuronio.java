@@ -7,6 +7,7 @@ package IU;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,7 +21,7 @@ public class Neuronio {
     private String estado; // oque será escrito no centro do circulo
     private boolean focus; // desenha com cor diferente
     private Color cor;  // cor padrão do contorno
-    private double peso[];
+    private ArrayList<Double> peso;
     private int tipo; //0 - entrada, 1- oculta, 2 - saida
 
     private int pos; // posição no ArrayList da maquina
@@ -35,7 +36,7 @@ public class Neuronio {
         this.estado = estado;
         this.tipo = tipo;
         this.focus = false;
-       
+        this.peso = new ArrayList();
     }
 
     public int getTipo() {
@@ -56,11 +57,11 @@ public class Neuronio {
         this.cor = cor;
     }
 
-    public double[] getPeso() {
+    public ArrayList getPeso() {
         return this.peso;
     }
 
-    public void setPeso(double[] peso) {
+    public void setPeso(ArrayList peso) {
         this.peso = peso;
     }
 
