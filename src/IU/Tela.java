@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -118,8 +119,8 @@ public class Tela extends javax.swing.JFrame {
         TelaPanel = new javax.swing.JScrollPane(this.view);
         EstadosBtnPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        numNeuronios = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        numNeuroniosText = new javax.swing.JTextField();
+        numOcultaBtn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         log = new javax.swing.JRadioButton();
         thip = new javax.swing.JRadioButton();
@@ -132,7 +133,7 @@ public class Tela extends javax.swing.JFrame {
         TabelaPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaPesos = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        salvarPesosBtn = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         File_menu = new javax.swing.JMenu();
         load_menu = new javax.swing.JMenuItem();
@@ -207,10 +208,10 @@ public class Tela extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Número de neurônios da camada oculta", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
 
-        jButton2.setText("Alterar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        numOcultaBtn.setText("Alterar");
+        numOcultaBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                numOcultaBtnActionPerformed(evt);
             }
         });
 
@@ -219,9 +220,9 @@ public class Tela extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(numNeuronios, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(numNeuroniosText, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(numOcultaBtn)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -229,14 +230,15 @@ public class Tela extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(numNeuronios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
+                    .addComponent(numNeuroniosText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(numOcultaBtn))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Função de Transferência", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
 
         buttonGroup1.add(log);
+        log.setSelected(true);
         log.setText("Logística");
 
         buttonGroup1.add(thip);
@@ -251,7 +253,7 @@ public class Tela extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(log)
                     .addComponent(thip))
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,6 +266,7 @@ public class Tela extends javax.swing.JFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Condição de Parada", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
 
         buttonGroup2.add(numIt);
+        numIt.setSelected(true);
         numIt.setText("Número de Iterações");
 
         buttonGroup2.add(erroMax);
@@ -294,7 +297,7 @@ public class Tela extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(numItText)
                     .addComponent(erroMaxText, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -318,11 +321,11 @@ public class Tela extends javax.swing.JFrame {
             .addGroup(EstadosBtnPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(treinarRede, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -331,13 +334,13 @@ public class Tela extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EstadosBtnPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(treinarRede, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(EstadosBtnPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(treinarRede, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(42, 42, 42))
         );
 
@@ -367,7 +370,7 @@ public class Tela extends javax.swing.JFrame {
         tabelaPesos.setRowSelectionAllowed(false);
         jScrollPane1.setViewportView(tabelaPesos);
 
-        jButton1.setText("Salvar mudanças");
+        salvarPesosBtn.setText("Salvar mudanças");
 
         javax.swing.GroupLayout TabelaPanelLayout = new javax.swing.GroupLayout(TabelaPanel);
         TabelaPanel.setLayout(TabelaPanelLayout);
@@ -377,7 +380,7 @@ public class Tela extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(TabelaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(salvarPesosBtn))
                 .addContainerGap())
         );
         TabelaPanelLayout.setVerticalGroup(
@@ -386,7 +389,7 @@ public class Tela extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(salvarPesosBtn)
                 .addContainerGap(124, Short.MAX_VALUE))
         );
 
@@ -521,6 +524,8 @@ public class Tela extends javax.swing.JFrame {
         int numSaidas = 0;
         String aux, line;
         ArrayList<ArrayList<Integer>> entradas;
+        this.rede.getArestas().clear();
+        this.rede.getNeuronios().clear();
 
         JFileChooser jc = new JFileChooser("D:\\Users\\Gi\\Desktop\\Desktop\\BCC\\7SEMESTRE\\IA");
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV", "csv");
@@ -585,13 +590,92 @@ public class Tela extends javax.swing.JFrame {
 
     }//GEN-LAST:event_load_menuActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void numOcultaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numOcultaBtnActionPerformed
+        int numOculta;
+        try {
+            numOculta = Integer.parseInt(this.numNeuroniosText.getText());
+
+            if (numOculta > this.r.getQtdOculta()) {
+                addOculta(numOculta - this.r.getQtdOculta());
+            } else if (numOculta < this.r.getQtdOculta()) {
+                removeOculta(this.r.getQtdOculta() - numOculta);
+            }
+            this.r.setQtdOculta(numOculta);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERRO: Entrada inválida !");
+        }
+    }//GEN-LAST:event_numOcultaBtnActionPerformed
 
     private void numItTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numItTextActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_numItTextActionPerformed
+
+    public void addOculta(int num) {
+        int qtdOculta = this.r.getQtdOculta();
+        addPesosSaida(num);
+        num = num + qtdOculta;
+
+        for (int i = qtdOculta; i < num; i++) {
+            Neuronio n = new Neuronio(250, (i + 1) * 100, "o" + i, i, OCULTA);
+            setPesos(n, this.r.getQtdEntrada());
+            this.rede.addNeuronio(n);
+            addNovasArestas(n);
+        }
+
+    }
+
+    public void addPesosSaida(int num) {
+        for (Neuronio n : this.rede.getNeuronios()) {
+            {
+                if (n.getTipo() == SAIDA) {
+                    for (int i = 0; i < num; i++) {
+                        n.getPeso().add(Math.random());
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeOculta(int num) {
+        int qtdOculta = this.r.getQtdOculta() - 1;
+        num = qtdOculta - num;
+        removePesosSaida(qtdOculta, num);
+
+        for (int i = qtdOculta; i > num; i--) {
+            Neuronio n = this.rede.getNeuronio("o" + i);
+            this.rede.removeNeuronio(n);
+
+        }
+    }
+    
+    public void removePesosSaida(int qtd, int num){
+        for (Neuronio n : this.rede.getNeuronios()) {
+            {
+                if (n.getTipo() == SAIDA) {
+                    for (int i = qtd; i > num; i--) {
+                        n.getPeso().remove(i);
+                    }
+                }
+            }
+        }
+    }
+
+    public void addNovasArestas(Neuronio n) {
+        for (Neuronio nIni : this.rede.getNeuronios()) {
+
+            if (nIni.getTipo() == ENTRADA) {
+
+                Aresta a = new Aresta(nIni, n);
+                this.rede.addAresta(a);
+
+            } else if (nIni.getTipo() == SAIDA) {
+
+                Aresta a = new Aresta(n, nIni);
+                this.rede.addAresta(a);
+            }
+        }
+    }
 
     public void criarRede() {
 
@@ -608,30 +692,28 @@ public class Tela extends javax.swing.JFrame {
         // Criando os neuronios da camada de saída, e setando os seus pesos
         for (int i = 0; i < qtdSaida; i++) {
             Neuronio n = new Neuronio(450, (i + 1) * 100, "s" + i, i, SAIDA);
+            setPesos(n, qtdOculta);
             this.rede.addNeuronio(n);
-            double[] pesos = new double[qtdOculta];
 
-            for (int j = 0; j < qtdOculta; j++) {
-                pesos[j] = Math.random();
-            }
-            n.setPeso(pesos);
         }
 
-        // Criando os neuronios da camada de saída, e setando os seus pesos
+        // Criando os neuronios da camada oculta, e setando os seus pesos
         for (int i = 0; i < qtdOculta; i++) {
             Neuronio n = new Neuronio(250, (i + 1) * 100, "o" + i, i, OCULTA);
-            double[] pesos = new double[qtdEntrada];
-
-            for (int j = 0; j < qtdEntrada; j++) {
-                pesos[j] = Math.random();
-            }
-
-            n.setPeso(pesos);
+            setPesos(n, qtdEntrada);
             this.rede.addNeuronio(n);
         }
         addArestas();
 
         this.TelaPanel.repaint();
+    }
+
+    public void setPesos(Neuronio n, int qtd) {
+
+        for (int j = 0; j < qtd; j++) {
+            n.getPeso().add(Math.random());
+        }
+
     }
 
     public void addArestas() {
@@ -662,13 +744,13 @@ public class Tela extends javax.swing.JFrame {
             return;
         }
 
-        model.setRowCount(n.getPeso().length);
+        model.setRowCount(n.getPeso().size());
 
         for (Aresta a : this.rede.getArestas()) {
 
             if (a.getDestino() == n) {
                 model.setValueAt(a.getOrigem().getEstado(), i, 0);
-                model.setValueAt(n.getPeso()[a.getOrigem().getPos()], i, 1);
+                model.setValueAt(n.getPeso().get(a.getOrigem().getPos()), i, 1);
 
                 i++;
             }
@@ -708,8 +790,6 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.JRadioButton erroMax;
     private javax.swing.JTextField erroMaxText;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
@@ -721,7 +801,9 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JRadioButton log;
     private javax.swing.JRadioButton numIt;
     private javax.swing.JTextField numItText;
-    private javax.swing.JTextField numNeuronios;
+    private javax.swing.JTextField numNeuroniosText;
+    private javax.swing.JButton numOcultaBtn;
+    private javax.swing.JButton salvarPesosBtn;
     private javax.swing.JTable tabelaPesos;
     private javax.swing.JRadioButton thip;
     private javax.swing.JButton treinarRede;

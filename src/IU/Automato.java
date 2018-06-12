@@ -54,6 +54,15 @@ public class Automato {
         this.vertices.add(v);
 
     }
+    
+    public Neuronio getNeuronio (String estado){
+        for (Neuronio n : vertices) {
+            if(n.getEstado().equals(estado)){
+                return n;
+            }
+        }
+        return null;
+    }
 
     // retona a string de uma transição que foi clicada
 //    public String getStrTrans(Point p) {
@@ -229,7 +238,7 @@ public class Automato {
             }
         }
         this.vertices.remove(vertice);
-        setEstados();
+        //setEstados();
     }
 
     /*
