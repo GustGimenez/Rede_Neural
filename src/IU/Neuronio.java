@@ -27,10 +27,11 @@ public class Neuronio {
     private boolean visitado; // auxiliar
 
     // Gets e Sets e construtor
-    public Neuronio(int x, int y, String estado, int tipo) {
+    public Neuronio(int x, int y, String estado, int pos, int tipo) {
         this.raio = 20;
         this.x = x;
         this.y = y;
+        this.pos = pos;
         this.estado = estado;
         this.tipo = tipo;
         this.focus = false;
