@@ -353,7 +353,7 @@ public class Tela extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Double.class
+                java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true
@@ -371,6 +371,11 @@ public class Tela extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tabelaPesos);
 
         salvarPesosBtn.setText("Salvar mudanças");
+        salvarPesosBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salvarPesosBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout TabelaPanelLayout = new javax.swing.GroupLayout(TabelaPanel);
         TabelaPanel.setLayout(TabelaPanelLayout);
@@ -611,6 +616,35 @@ public class Tela extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_numItTextActionPerformed
 
+    private void salvarPesosBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarPesosBtnActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) this.tabelaPesos.getModel();
+        int tipo = this.neuronio.getTipo() - 1;
+        int qtd;
+        ArrayList<Neuronio> neuronios;
+        ArrayList<Double> pesos = new ArrayList();
+        String aux;
+        System.out.println(this.neuronio.getEstado());
+        if (this.neuronio.getTipo() == 1) {
+            qtd = this.r.getQtdEntrada();
+        } else {
+            qtd = this.r.getQtdOculta();
+        }
+
+        neuronios = this.rede.getNeuronios();
+        int j = 0;
+        for (Neuronio n : neuronios) {
+            if (n.getTipo() == tipo) {
+                aux = (String) model.getValueAt(j, 1);
+                pesos.add(Double.valueOf(aux));
+                j++;
+            }
+        }
+
+        this.neuronio.setPeso(pesos);
+
+    }//GEN-LAST:event_salvarPesosBtnActionPerformed
+
     public void addOculta(int num) {
         int qtdOculta = this.r.getQtdOculta();
         addPesosSaida(num);
@@ -648,8 +682,8 @@ public class Tela extends javax.swing.JFrame {
 
         }
     }
-    
-    public void removePesosSaida(int qtd, int num){
+
+    public void removePesosSaida(int qtd, int num) {
         for (Neuronio n : this.rede.getNeuronios()) {
             {
                 if (n.getTipo() == SAIDA) {
@@ -750,7 +784,7 @@ public class Tela extends javax.swing.JFrame {
 
             if (a.getDestino() == n) {
                 model.setValueAt(a.getOrigem().getEstado(), i, 0);
-                model.setValueAt(n.getPeso().get(a.getOrigem().getPos()), i, 1);
+                model.setValueAt(n.getPeso().get(a.getOrigem().getPos()).toString(), i, 1);
 
                 i++;
             }
