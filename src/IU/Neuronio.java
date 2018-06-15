@@ -22,33 +22,31 @@ public class Neuronio {
     private boolean focus; // desenha com cor diferente
     private Color cor;  // cor padrão do contorno
     private ArrayList<Double> peso;
-    private int tipo; //0 - entrada, 1- oculta, 2 - saida
+    private double net;
+
+    public double getNet() {
+        return net;
+    }
+
+    public void setNet(double net) {
+        this.net = net;
+    }
 
     private int pos; // posição no ArrayList da maquina
     private boolean visitado; // auxiliar
 
     // Gets e Sets e construtor
-    public Neuronio(int x, int y, String estado, int pos, int tipo) {
+    public Neuronio(int x, int y, String estado, int pos) {
         this.raio = 20;
         this.x = x;
         this.y = y;
         this.pos = pos;
         this.estado = estado;
-        this.tipo = tipo;
         this.focus = false;
         this.peso = new ArrayList();
     }
 
-    public int getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(int tipo) {
-        this.tipo = tipo;
-    }
-    
-    
-
+  
     public Color getCor() {
         return cor;
     }

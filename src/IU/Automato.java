@@ -17,17 +17,42 @@ import java.util.ArrayList;
  */
 public class Automato {
 
-    ArrayList<Neuronio> vertices;
+    ArrayList<Neuronio> entrada;
+    ArrayList<Neuronio> saida;
+    ArrayList<Neuronio> oculta;
+
     ArrayList<Aresta> arestas;
     private Neuronio Inicial; // Mantém o inicial para ser mais facilmente manipulado
 
     public Automato() {
-        this.vertices = new ArrayList();
+        this.entrada = new ArrayList();
+        this.saida = new ArrayList();
+        this.oculta = new ArrayList();
         this.arestas = new ArrayList();
     }
 
-    public ArrayList<Neuronio> getNeuronios() {
-        return vertices;
+    public ArrayList<Neuronio> getEntrada() {
+        return entrada;
+    }
+
+    public void setEntrada(ArrayList<Neuronio> entrada) {
+        this.entrada = entrada;
+    }
+
+    public ArrayList<Neuronio> getSaida() {
+        return saida;
+    }
+
+    public void setSaida(ArrayList<Neuronio> saida) {
+        this.saida = saida;
+    }
+
+    public ArrayList<Neuronio> getOculta() {
+        return oculta;
+    }
+
+    public void setOculta(ArrayList<Neuronio> oculta) {
+        this.oculta = oculta;
     }
 
     public ArrayList<Aresta> getArestas() {
@@ -47,21 +72,6 @@ public class Automato {
     // Retona o objeto vertice inicial
     public Neuronio getInicial() {
         return Inicial;
-    }
-
-    public void addNeuronio(Neuronio v) {
-
-        this.vertices.add(v);
-
-    }
-    
-    public Neuronio getNeuronio (String estado){
-        for (Neuronio n : vertices) {
-            if(n.getEstado().equals(estado)){
-                return n;
-            }
-        }
-        return null;
     }
 
     // retona a string de uma transição que foi clicada
@@ -88,14 +98,26 @@ public class Automato {
 //    }
     // Retorna uma dimensão baseado nos vertices mais distantes em relação a origem
     public java.awt.Dimension getSize() {
-        if (this.vertices.size() > 0) {
+        ArrayList<Neuronio> vertices = new ArrayList();
+
+        for (Neuronio neuronio : this.entrada) {
+            vertices.add(neuronio);
+        }
+        for (Neuronio neuronio : this.saida) {
+            vertices.add(neuronio);
+        }
+        for (Neuronio neuronio : this.oculta) {
+            vertices.add(neuronio);
+        }
+
+        if (vertices.size() > 0) {
             float maxX = vertices.get(0).getX();
             float minX = vertices.get(0).getX();
             float maxY = vertices.get(0).getY();
             float minY = vertices.get(0).getY();
 
             //Encontra o maior e menor valores para X e Y
-            for (Neuronio v : this.vertices) {
+            for (Neuronio v : vertices) {
                 if (maxX < v.getX()) {
                     maxX = v.getX();
                 } else if (minX > v.getX()) {
@@ -109,8 +131,8 @@ public class Automato {
                 }
             }
 
-            int w = (int) (maxX + (this.vertices.get(0).getRaio() * 5)) + 350;
-            int h = (int) (maxY + (this.vertices.get(0).getRaio() * 5));
+            int w = (int) (maxX + (vertices.get(0).getRaio() * 5)) + 350;
+            int h = (int) (maxY + (vertices.get(0).getRaio() * 5));
 
             return new java.awt.Dimension(w, h);
         } else {
@@ -120,6 +142,17 @@ public class Automato {
     }
 
     public Dimension getDimensao() {
+        ArrayList<Neuronio> vertices = new ArrayList();
+
+        for (Neuronio neuronio : this.entrada) {
+            vertices.add(neuronio);
+        }
+        for (Neuronio neuronio : this.saida) {
+            vertices.add(neuronio);
+        }
+        for (Neuronio neuronio : this.oculta) {
+            vertices.add(neuronio);
+        }
         int x = 0, y = 0;
         for (Neuronio v : vertices) {
             if (v.getX() > x) {
@@ -134,29 +167,23 @@ public class Automato {
         return new Dimension(x + 50, y + 50);
     }
 
-    // Normaliza os estados apos uma alteração (remoção de um estado)
-    private void setEstados() {
-        int i = 0;
-        for (Neuronio v : vertices) {
-            v.setEstado("q" + i++);
-            v.setPos(i);
-        }
-    }
-
-    // Normaliza as posições do vertice de acordo com ArrayList
-    public void setPos() {
-        int i = 0;
-        for (Neuronio v : vertices) {
-            v.setPos(i++);
-        }
-    }
-
     /*
     *@arg estado posição do estado que está sendo selecionado
     Seta estado como selecionado e retorna para que possa ser manipulado
      */
     public Neuronio setSelected(int estado) {
-        Neuronio v = this.vertices.get(estado);
+        ArrayList<Neuronio> vertices = new ArrayList();
+
+        for (Neuronio neuronio : this.entrada) {
+            vertices.add(neuronio);
+        }
+        for (Neuronio neuronio : this.saida) {
+            vertices.add(neuronio);
+        }
+        for (Neuronio neuronio : this.oculta) {
+            vertices.add(neuronio);
+        }
+        Neuronio v = vertices.get(estado);
         v.setFocus(true);
         return v;
     }
@@ -180,8 +207,15 @@ public class Automato {
 //        return alfa;
 //    }
     public void draw(Graphics2D g) {
-        for (Neuronio v : vertices) {
-            v.desenha(g);
+
+        for (Neuronio n : this.entrada) {
+            n.desenha(g);
+        }
+        for (Neuronio n : this.saida) {
+            n.desenha(g);
+        }
+        for (Neuronio n : this.oculta) {
+            n.desenha(g);
         }
 
         for (Aresta a : arestas) {
@@ -191,6 +225,17 @@ public class Automato {
     }
 
     public Neuronio busca(int x, int y) {
+        ArrayList<Neuronio> vertices = new ArrayList();
+
+        for (Neuronio neuronio : this.entrada) {
+            vertices.add(neuronio);
+        }
+        for (Neuronio neuronio : this.saida) {
+            vertices.add(neuronio);
+        }
+        for (Neuronio neuronio : this.oculta) {
+            vertices.add(neuronio);
+        }
         int x1, y1, r;
         r = 20;
         for (Neuronio v : vertices) {
@@ -225,7 +270,6 @@ public class Automato {
 //            }
 //        }
 //    }
-
     public void removeNeuronio(Neuronio vertice) {
         int num = this.arestas.size();
         Aresta a;
@@ -237,7 +281,13 @@ public class Automato {
                 num--;
             }
         }
-        this.vertices.remove(vertice);
+        if (vertice.getEstado().charAt(0) == 'o') {
+            this.oculta.remove(vertice);
+        } else if (vertice.getEstado().charAt(0) == 'e') {
+            this.entrada.remove(vertice);
+        } else if (vertice.getEstado().charAt(0) == 's') {
+            this.saida.remove(vertice);
+        }
         //setEstados();
     }
 
@@ -256,12 +306,5 @@ public class Automato {
 //            }
 //        }
 //    }
-
     // nome auto explicativo
-    private void resetVisita() {
-        for (Neuronio v : this.vertices) {
-            v.setVisitado(false);
-        }
-    }
-
 }
