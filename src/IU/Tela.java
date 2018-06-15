@@ -530,7 +530,9 @@ public class Tela extends javax.swing.JFrame {
         String aux, line;
         ArrayList<ArrayList<Integer>> entradas;
         this.rede.getArestas().clear();
-        this.rede.getNeuronios().clear();
+        this.rede.getEntrada().clear();
+        this.rede.getSaida().clear();
+        this.rede.getOculta().clear();
 
         JFileChooser jc = new JFileChooser("D:\\Users\\Gi\\Desktop\\Desktop\\BCC\\7SEMESTRE\\IA");
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV", "csv");
@@ -551,9 +553,9 @@ public class Tela extends javax.swing.JFrame {
                 line = in.readLine();
                 StringTokenizer t1 = new StringTokenizer(line, ",");
 
-                aux = t1.nextToken();
+                t1.nextToken();
                 while (t1.hasMoreTokens()) {
-                    aux = t1.nextToken();
+                    t1.nextToken();
                     entradas.add(new ArrayList());
                 }
 
@@ -619,26 +621,24 @@ public class Tela extends javax.swing.JFrame {
     private void salvarPesosBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarPesosBtnActionPerformed
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) this.tabelaPesos.getModel();
-        int tipo = this.neuronio.getTipo() - 1;
-        int qtd;
+        String aux = this.neuronio.getEstado();
+        int tipo;
         ArrayList<Neuronio> neuronios;
         ArrayList<Double> pesos = new ArrayList();
-        String aux;
-        System.out.println(this.neuronio.getEstado());
-        if (this.neuronio.getTipo() == 1) {
-            qtd = this.r.getQtdEntrada();
+
+        if (aux.charAt(0) == 'o') {
+            tipo = 1;
+            neuronios = this.rede.getEntrada();
         } else {
-            qtd = this.r.getQtdOculta();
+            tipo = 2;
+            neuronios = this.rede.getOculta();
         }
 
-        neuronios = this.rede.getNeuronios();
         int j = 0;
         for (Neuronio n : neuronios) {
-            if (n.getTipo() == tipo) {
-                aux = (String) model.getValueAt(j, 1);
-                pesos.add(Double.valueOf(aux));
-                j++;
-            }
+            aux = (String) model.getValueAt(j, 1);
+            pesos.add(Double.valueOf(aux));
+            j++;
         }
 
         this.neuronio.setPeso(pesos);
@@ -651,22 +651,18 @@ public class Tela extends javax.swing.JFrame {
         num = num + qtdOculta;
 
         for (int i = qtdOculta; i < num; i++) {
-            Neuronio n = new Neuronio(250, (i + 1) * 100, "o" + i, i, OCULTA);
+            Neuronio n = new Neuronio(250, (i + 1) * 100, "o" + i, i);
             setPesos(n, this.r.getQtdEntrada());
-            this.rede.addNeuronio(n);
-            addNovasArestas(n);
+            this.rede.getOculta().add(n);
+            addNovasArestas(n, n.getEstado().charAt(0));
         }
 
     }
 
     public void addPesosSaida(int num) {
-        for (Neuronio n : this.rede.getNeuronios()) {
-            {
-                if (n.getTipo() == SAIDA) {
-                    for (int i = 0; i < num; i++) {
-                        n.getPeso().add(Math.random());
-                    }
-                }
+        for (Neuronio n : this.rede.getSaida()) {
+            for (int i = 0; i < num; i++) {
+                n.getPeso().add(Math.random());
             }
         }
     }
@@ -677,38 +673,37 @@ public class Tela extends javax.swing.JFrame {
         removePesosSaida(qtdOculta, num);
 
         for (int i = qtdOculta; i > num; i--) {
-            Neuronio n = this.rede.getNeuronio("o" + i);
+            Neuronio n = this.rede.getOculta().get(i);
             this.rede.removeNeuronio(n);
 
         }
     }
 
     public void removePesosSaida(int qtd, int num) {
-        for (Neuronio n : this.rede.getNeuronios()) {
-            {
-                if (n.getTipo() == SAIDA) {
-                    for (int i = qtd; i > num; i--) {
-                        n.getPeso().remove(i);
-                    }
-                }
+        for (Neuronio n : this.rede.getSaida()) {
+            for (int i = qtd; i > num; i--) {
+                n.getPeso().remove(i);
             }
         }
     }
 
-    public void addNovasArestas(Neuronio n) {
-        for (Neuronio nIni : this.rede.getNeuronios()) {
+    public void addNovasArestas(Neuronio n, char tipo) {
+        Aresta a;
+        ArrayList<Neuronio> neuronios;
 
-            if (nIni.getTipo() == ENTRADA) {
+        neuronios = this.rede.getEntrada();
 
-                Aresta a = new Aresta(nIni, n);
-                this.rede.addAresta(a);
+        for (Neuronio nIni : neuronios) {
 
-            } else if (nIni.getTipo() == SAIDA) {
-
-                Aresta a = new Aresta(n, nIni);
-                this.rede.addAresta(a);
-            }
+            a = new Aresta(nIni, n);
+            this.rede.addAresta(a);
         }
+        for (Neuronio nIni : neuronios) {
+
+            a = new Aresta(n, nIni);
+            this.rede.addAresta(a);
+        }
+
     }
 
     public void criarRede() {
@@ -719,23 +714,23 @@ public class Tela extends javax.swing.JFrame {
 
         // Criando os neurônios
         for (int i = 0; i < qtdEntrada; i++) {
-            Neuronio n = new Neuronio(50, (i + 1) * 100, "e" + i, i, ENTRADA);
-            this.rede.addNeuronio(n);
+            Neuronio n = new Neuronio(50, (i + 1) * 100, "e" + i, i);
+            this.rede.getEntrada().add(n);
         }
 
         // Criando os neuronios da camada de saída, e setando os seus pesos
         for (int i = 0; i < qtdSaida; i++) {
-            Neuronio n = new Neuronio(450, (i + 1) * 100, "s" + i, i, SAIDA);
+            Neuronio n = new Neuronio(450, (i + 1) * 100, "s" + i, i);
             setPesos(n, qtdOculta);
-            this.rede.addNeuronio(n);
+            this.rede.getSaida().add(n);
 
         }
 
         // Criando os neuronios da camada oculta, e setando os seus pesos
         for (int i = 0; i < qtdOculta; i++) {
-            Neuronio n = new Neuronio(250, (i + 1) * 100, "o" + i, i, OCULTA);
+            Neuronio n = new Neuronio(250, (i + 1) * 100, "o" + i, i);
             setPesos(n, qtdEntrada);
-            this.rede.addNeuronio(n);
+            this.rede.getOculta().add(n);
         }
         addArestas();
 
@@ -751,21 +746,20 @@ public class Tela extends javax.swing.JFrame {
     }
 
     public void addArestas() {
-        for (Neuronio nIni : this.rede.getNeuronios()) {
-            for (Neuronio nFim : this.rede.getNeuronios()) {
+        ArrayList<Neuronio> entradas = this.rede.getEntrada();
+        ArrayList<Neuronio> oculta = this.rede.getOculta();
+        ArrayList<Neuronio> saidas = this.rede.getSaida();
+        int aux = 0;
 
-                if (nIni.getTipo() == ENTRADA) {
-                    if (nFim.getTipo() == OCULTA) {
-                        Aresta a = new Aresta(nIni, nFim);
-                        this.rede.addAresta(a);
-                    }
-                } else if (nIni.getTipo() == OCULTA) {
-                    if (nFim.getTipo() == SAIDA) {
-                        Aresta a = new Aresta(nIni, nFim);
-                        this.rede.addAresta(a);
-                    }
-                }
+        for (Neuronio n : oculta) {
+            for (aux = 0; aux < entradas.size(); aux++) {
+                this.rede.addAresta(new Aresta(entradas.get(aux), n));
             }
+            
+            for (aux = 0; aux < saidas.size(); aux++) {
+                this.rede.addAresta(new Aresta(n, saidas.get(aux)));
+            }
+                
         }
     }
 
@@ -773,10 +767,13 @@ public class Tela extends javax.swing.JFrame {
         int i = 0;
         DefaultTableModel model = (DefaultTableModel) this.tabelaPesos.getModel();
 
-        if (n.getTipo() == ENTRADA) {
+        if (n.getEstado().charAt(0) == 'e') {
             model.setRowCount(0);
+            this.salvarPesosBtn.setEnabled(false);
             return;
         }
+
+        this.salvarPesosBtn.setEnabled(true);
 
         model.setRowCount(n.getPeso().size());
 
