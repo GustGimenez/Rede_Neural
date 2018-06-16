@@ -222,6 +222,33 @@ public class Rede {
 
     }
 
+    public void testaRede(Automato rede, float[][] entradas, ArrayList classe, boolean funT, int tam) {
+        float[] entrada = new float[qtdEntrada];
+        int[] saida;
+        this.rede = rede;
+
+        for (int i = 0; i < tam; i++) {
+            for (int j = 0; j < entradas[0].length; j++) {
+                for (int k = 0; k < qtdEntrada; k++) {
+                    entrada[k] = entradas[k][j];
+                }
+                saida = saidaDesejada(classe, funT, j);
+                calculaNetOculta(entrada);
+                if (funT) {//Logistica
+                    aplicaLogistica(true); //Camada oculta
+                } else {
+                    aplicaTanHiperbolica(true);
+                }
+                calculaNetSaida();
+                if (funT) {//Logistica
+                    aplicaLogistica(false); //Camda de saida
+                } else {
+                    aplicaTanHiperbolica(false);
+                }
+            }
+        }
+    }
+
     public double treinaRedeIteracao(Automato rede, float[][] entradas, ArrayList classe, boolean funT, int tam) {
         float[] entrada = new float[qtdEntrada];
         int[] saida;

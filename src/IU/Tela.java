@@ -116,8 +116,13 @@ public class Tela extends javax.swing.JFrame {
         buttonGroup2 = new javax.swing.ButtonGroup();
         buttonGroup3 = new javax.swing.ButtonGroup();
         AutomatoLayout = new javax.swing.JPanel();
+        PanelMatrizConfusao = new javax.swing.JPanel();
         PanelAutomato = new javax.swing.JPanel();
         TelaPanel = new javax.swing.JScrollPane(this.view);
+        TabelaPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelaPesos = new javax.swing.JTable();
+        salvarPesosBtn = new javax.swing.JButton();
         EstadosBtnPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         numNeuroniosText = new javax.swing.JTextField();
@@ -131,10 +136,7 @@ public class Tela extends javax.swing.JFrame {
         numItText = new javax.swing.JTextField();
         erroMaxText = new javax.swing.JTextField();
         treinarRede = new javax.swing.JButton();
-        TabelaPanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tabelaPesos = new javax.swing.JTable();
-        salvarPesosBtn = new javax.swing.JButton();
+        testaRedeBtn = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         File_menu = new javax.swing.JMenu();
         load_menu = new javax.swing.JMenuItem();
@@ -179,6 +181,19 @@ public class Tela extends javax.swing.JFrame {
 
         AutomatoLayout.setLayout(new java.awt.CardLayout());
 
+        javax.swing.GroupLayout PanelMatrizConfusaoLayout = new javax.swing.GroupLayout(PanelMatrizConfusao);
+        PanelMatrizConfusao.setLayout(PanelMatrizConfusaoLayout);
+        PanelMatrizConfusaoLayout.setHorizontalGroup(
+            PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1031, Short.MAX_VALUE)
+        );
+        PanelMatrizConfusaoLayout.setVerticalGroup(
+            PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 439, Short.MAX_VALUE)
+        );
+
+        AutomatoLayout.add(PanelMatrizConfusao, "card3");
+
         TelaPanel.setBackground(new java.awt.Color(204, 204, 204));
         TelaPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Clique no Neurônio para editar seus pesos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
         TelaPanel.setAutoscrolls(true);
@@ -205,6 +220,83 @@ public class Tela extends javax.swing.JFrame {
             }
         });
 
+        tabelaPesos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Neurônio Ligado", "Pesos"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabelaPesos.setRowSelectionAllowed(false);
+        jScrollPane1.setViewportView(tabelaPesos);
+
+        salvarPesosBtn.setText("Salvar mudanças");
+        salvarPesosBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salvarPesosBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout TabelaPanelLayout = new javax.swing.GroupLayout(TabelaPanel);
+        TabelaPanel.setLayout(TabelaPanelLayout);
+        TabelaPanelLayout.setHorizontalGroup(
+            TabelaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(TabelaPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(TabelaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(salvarPesosBtn)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        TabelaPanelLayout.setVerticalGroup(
+            TabelaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(TabelaPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(salvarPesosBtn)
+                .addContainerGap(119, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout PanelAutomatoLayout = new javax.swing.GroupLayout(PanelAutomato);
+        PanelAutomato.setLayout(PanelAutomatoLayout);
+        PanelAutomatoLayout.setHorizontalGroup(
+            PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelAutomatoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(TelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(TabelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        PanelAutomatoLayout.setVerticalGroup(
+            PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelAutomatoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(TabelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        AutomatoLayout.add(PanelAutomato, "AutomatoEdit");
+
         EstadosBtnPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Número de neurônios da camada oculta", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
@@ -222,7 +314,7 @@ public class Tela extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(numNeuroniosText, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
                 .addComponent(numOcultaBtn)
                 .addContainerGap())
         );
@@ -254,7 +346,7 @@ public class Tela extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(log)
                     .addComponent(thip))
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -298,7 +390,7 @@ public class Tela extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(numItText)
                     .addComponent(erroMaxText, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -312,11 +404,19 @@ public class Tela extends javax.swing.JFrame {
                     .addComponent(erroMaxText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
-        treinarRede.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        treinarRede.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         treinarRede.setText("Treinar Rede");
         treinarRede.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 treinarRedeActionPerformed(evt);
+            }
+        });
+
+        testaRedeBtn.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        testaRedeBtn.setText("Testar Rede");
+        testaRedeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                testaRedeBtnActionPerformed(evt);
             }
         });
 
@@ -329,108 +429,29 @@ public class Tela extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(treinarRede, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(treinarRede, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(testaRedeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         EstadosBtnPanelLayout.setVerticalGroup(
             EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EstadosBtnPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(testaRedeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(EstadosBtnPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(EstadosBtnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(treinarRede, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(42, 42, 42))
+                .addGap(39, 39, 39))
         );
-
-        tabelaPesos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Neurônio Ligado", "Pesos"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tabelaPesos.setRowSelectionAllowed(false);
-        jScrollPane1.setViewportView(tabelaPesos);
-
-        salvarPesosBtn.setText("Salvar mudanças");
-        salvarPesosBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                salvarPesosBtnActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout TabelaPanelLayout = new javax.swing.GroupLayout(TabelaPanel);
-        TabelaPanel.setLayout(TabelaPanelLayout);
-        TabelaPanelLayout.setHorizontalGroup(
-            TabelaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TabelaPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(TabelaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(salvarPesosBtn))
-                .addContainerGap())
-        );
-        TabelaPanelLayout.setVerticalGroup(
-            TabelaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(TabelaPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(salvarPesosBtn)
-                .addContainerGap(124, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout PanelAutomatoLayout = new javax.swing.GroupLayout(PanelAutomato);
-        PanelAutomato.setLayout(PanelAutomatoLayout);
-        PanelAutomatoLayout.setHorizontalGroup(
-            PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                        .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                        .addComponent(TelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TabelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-        );
-        PanelAutomatoLayout.setVerticalGroup(
-            PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelAutomatoLayout.createSequentialGroup()
-                .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(TabelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        AutomatoLayout.add(PanelAutomato, "AutomatoEdit");
 
         File_menu.setText("Arquivos");
 
@@ -454,12 +475,18 @@ public class Tela extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(AutomatoLayout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(AutomatoLayout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(EstadosBtnPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(AutomatoLayout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -675,6 +702,10 @@ public class Tela extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_treinarRedeActionPerformed
 
+    private void testaRedeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testaRedeBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_testaRedeBtnActionPerformed
+
     public void addOculta(int num) {
         int qtdOculta = this.r.getQtdOculta();
         addPesosSaida(num);
@@ -842,6 +873,7 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JMenu File_menu;
     private javax.swing.JPopupMenu Menu;
     private javax.swing.JPanel PanelAutomato;
+    private javax.swing.JPanel PanelMatrizConfusao;
     private javax.swing.JCheckBoxMenuItem PopUpItem1;
     private javax.swing.JCheckBoxMenuItem PopUpItem2;
     private javax.swing.JPanel TabelaPanel;
@@ -866,6 +898,7 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JButton numOcultaBtn;
     private javax.swing.JButton salvarPesosBtn;
     private javax.swing.JTable tabelaPesos;
+    private javax.swing.JButton testaRedeBtn;
     private javax.swing.JRadioButton thip;
     private javax.swing.JButton treinarRede;
     // End of variables declaration//GEN-END:variables
