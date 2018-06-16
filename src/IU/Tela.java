@@ -116,13 +116,15 @@ public class Tela extends javax.swing.JFrame {
         buttonGroup2 = new javax.swing.ButtonGroup();
         buttonGroup3 = new javax.swing.ButtonGroup();
         AutomatoLayout = new javax.swing.JPanel();
-        PanelMatrizConfusao = new javax.swing.JPanel();
         PanelAutomato = new javax.swing.JPanel();
         TelaPanel = new javax.swing.JScrollPane(this.view);
         TabelaPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaPesos = new javax.swing.JTable();
         salvarPesosBtn = new javax.swing.JButton();
+        PanelMatrizConfusao = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        matrizConfusao = new javax.swing.JTable();
         EstadosBtnPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         numNeuroniosText = new javax.swing.JTextField();
@@ -140,7 +142,9 @@ public class Tela extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         File_menu = new javax.swing.JMenu();
         load_menu = new javax.swing.JMenuItem();
+        load_teste_menu = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
+        matriz_confusao_menu = new javax.swing.JMenuItem();
 
         PopUpItem1.setText("Inicial");
         PopUpItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -180,19 +184,6 @@ public class Tela extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         AutomatoLayout.setLayout(new java.awt.CardLayout());
-
-        javax.swing.GroupLayout PanelMatrizConfusaoLayout = new javax.swing.GroupLayout(PanelMatrizConfusao);
-        PanelMatrizConfusao.setLayout(PanelMatrizConfusaoLayout);
-        PanelMatrizConfusaoLayout.setHorizontalGroup(
-            PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1031, Short.MAX_VALUE)
-        );
-        PanelMatrizConfusaoLayout.setVerticalGroup(
-            PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 439, Short.MAX_VALUE)
-        );
-
-        AutomatoLayout.add(PanelMatrizConfusao, "card3");
 
         TelaPanel.setBackground(new java.awt.Color(204, 204, 204));
         TelaPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Clique no Neurônio para editar seus pesos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
@@ -296,6 +287,37 @@ public class Tela extends javax.swing.JFrame {
         );
 
         AutomatoLayout.add(PanelAutomato, "AutomatoEdit");
+
+        matrizConfusao.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(matrizConfusao);
+
+        javax.swing.GroupLayout PanelMatrizConfusaoLayout = new javax.swing.GroupLayout(PanelMatrizConfusao);
+        PanelMatrizConfusao.setLayout(PanelMatrizConfusaoLayout);
+        PanelMatrizConfusaoLayout.setHorizontalGroup(
+            PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelMatrizConfusaoLayout.createSequentialGroup()
+                .addGap(265, 265, 265)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(348, Short.MAX_VALUE))
+        );
+        PanelMatrizConfusaoLayout.setVerticalGroup(
+            PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelMatrizConfusaoLayout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 36, Short.MAX_VALUE))
+        );
+
+        AutomatoLayout.add(PanelMatrizConfusao, "card3");
 
         EstadosBtnPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -464,9 +486,26 @@ public class Tela extends javax.swing.JFrame {
         });
         File_menu.add(load_menu);
 
+        load_teste_menu.setText("Carregar Arquivo de Teste");
+        load_teste_menu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                load_teste_menuActionPerformed(evt);
+            }
+        });
+        File_menu.add(load_teste_menu);
+
         jMenuBar1.add(File_menu);
 
         jMenu1.setText("Rede");
+
+        matriz_confusao_menu.setText("Matriz de Confusão");
+        matriz_confusao_menu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                matriz_confusao_menuActionPerformed(evt);
+            }
+        });
+        jMenu1.add(matriz_confusao_menu);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -560,7 +599,7 @@ public class Tela extends javax.swing.JFrame {
     private void load_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_menuActionPerformed
         int numEntradas;
         int numSaidas = 0;
-        String aux, line;
+        BufferedReader in = null;
         ArrayList<ArrayList<Integer>> entradas;
         this.rede.getArestas().clear();
         this.rede.getEntrada().clear();
@@ -574,59 +613,33 @@ public class Tela extends javax.swing.JFrame {
         result = jc.showOpenDialog(null);
 
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            in = null;
 
-            entradas = new ArrayList();
-            this.saidas = new ArrayList();
-
-            BufferedReader in = null;
             try {
                 String filename = jc.getSelectedFile().getAbsolutePath();
                 in = new BufferedReader(new FileReader(filename));
 
-                line = in.readLine();
-                StringTokenizer t1 = new StringTokenizer(line, ",");
-
-                t1.nextToken();
-                while (t1.hasMoreTokens()) {
-                    t1.nextToken();
-                    entradas.add(new ArrayList());
-                }
-
-                numEntradas = entradas.size();
-
-                while (in.ready()) {
-                    line = in.readLine();
-                    t1 = new StringTokenizer(line, ",");
-
-                    for (int i = 0; i < numEntradas; i++) {
-                        aux = t1.nextToken();
-                        entradas.get(i).add(Integer.parseInt(aux));
-                    }
-                    aux = t1.nextToken();
-                    if (!this.saidas.contains(Integer.parseInt(aux))) {
-                        numSaidas++;
-                    }
-                    this.saidas.add(Integer.parseInt(aux));
-
-                }
-                this.r = new Rede(numEntradas, numSaidas);
-
-                this.entradas = this.r.normalizaEntradas(entradas);
-
-                criarRede();
-
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                JOptionPane.showMessageDialog(null, "Arquivo não encontrado");
+                return;
             }
         }
+
+        entradas = new ArrayList();
+        numEntradas = this.contEntradas(in, entradas);
+        this.saidas = new ArrayList();
+        numSaidas = this.entradasESaidas(in, numEntradas, entradas);
+
+        if (numSaidas == 0) {
+            JOptionPane.showMessageDialog(null, "Erro ao percorrer o arquivo");
+        }
+
+        this.r = new Rede(numEntradas, numSaidas);
+
+        this.entradas = this.r.normalizaEntradas(entradas);
+
+        criarRede();
 
     }//GEN-LAST:event_load_menuActionPerformed
 
@@ -705,6 +718,54 @@ public class Tela extends javax.swing.JFrame {
     private void testaRedeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testaRedeBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_testaRedeBtnActionPerformed
+
+    private void load_teste_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_teste_menuActionPerformed
+        int numEntradas;
+        int numSaidas;
+        ArrayList<ArrayList<Integer>> entradas = new ArrayList();
+        BufferedReader in = null;
+
+        JFileChooser jc = new JFileChooser("D:\\Users\\Gi\\Desktop\\Desktop\\BCC\\7SEMESTRE\\IA");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV", "csv");
+        jc.setFileFilter(filter);
+        int result;
+        result = jc.showOpenDialog(null);
+
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            in = null;
+
+            try {
+                String filename = jc.getSelectedFile().getAbsolutePath();
+                in = new BufferedReader(new FileReader(filename));
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Arquivo não encontrado");
+                return;
+            }
+        }
+        this.saidas = new ArrayList();
+        numEntradas = this.contEntradas(in, entradas);
+        numSaidas = this.entradasESaidas(in, numEntradas, entradas);
+
+        if (numSaidas == 0) {
+            JOptionPane.showMessageDialog(null, "Erro ao percorrer o arquivo");
+        }
+
+        this.r.setQtdEntrada(numEntradas);
+        this.r.setQtdSaida(numSaidas);
+
+        this.entradas = this.r.normalizaEntradas(entradas);
+    }//GEN-LAST:event_load_teste_menuActionPerformed
+
+    private void matriz_confusao_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matriz_confusao_menuActionPerformed
+        DefaultTableModel matriz = (DefaultTableModel) this.matrizConfusao.getModel();
+        int qtdClasses = this.r.getQtdEntrada();
+
+        matriz.setNumRows(qtdClasses);
+        matriz.setColumnCount(qtdClasses);
+
+    }//GEN-LAST:event_matriz_confusao_menuActionPerformed
 
     public void addOculta(int num) {
         int qtdOculta = this.r.getQtdOculta();
@@ -799,7 +860,7 @@ public class Tela extends javax.swing.JFrame {
     }
 
     public void setPesos(Neuronio n, int qtd) {
-        
+
         for (int j = 0; j < qtd; j++) {
             n.getPeso().add(Math.random());
         }
@@ -851,6 +912,56 @@ public class Tela extends javax.swing.JFrame {
 
     }
 
+    public int contEntradas(BufferedReader in, ArrayList<ArrayList<Integer>> entradas) {
+        try {
+            String line = in.readLine();
+            StringTokenizer t1 = new StringTokenizer(line, ",");
+
+            t1.nextToken();
+            while (t1.hasMoreTokens()) {
+                t1.nextToken();
+                entradas.add(new ArrayList());
+            }
+
+            return entradas.size();
+
+        } catch (IOException ex) {
+            Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return 0;
+    }
+
+    public int entradasESaidas(BufferedReader in, int numEntradas, ArrayList<ArrayList<Integer>> entradas) {
+        try {
+            String line, aux;
+            StringTokenizer t1;
+            int numSaidas = 0;
+
+            while (in.ready()) {
+                line = in.readLine();
+                t1 = new StringTokenizer(line, ",");
+
+                for (int i = 0; i < numEntradas; i++) {
+                    aux = t1.nextToken();
+                    entradas.get(i).add(Integer.parseInt(aux));
+                }
+                aux = t1.nextToken();
+                if (!this.saidas.contains(Integer.parseInt(aux))) {
+                    numSaidas++;
+                }
+                this.saidas.add(Integer.parseInt(aux));
+
+            }
+
+            return numSaidas;
+
+        } catch (IOException ex) {
+            Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -890,8 +1001,12 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuItem load_menu;
+    private javax.swing.JMenuItem load_teste_menu;
     private javax.swing.JRadioButton log;
+    private javax.swing.JTable matrizConfusao;
+    private javax.swing.JMenuItem matriz_confusao_menu;
     private javax.swing.JRadioButton numIt;
     private javax.swing.JTextField numItText;
     private javax.swing.JTextField numNeuroniosText;
