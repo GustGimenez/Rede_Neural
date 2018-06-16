@@ -8,6 +8,7 @@ package rede_neural;
 import IU.Automato;
 import IU.Neuronio;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -222,31 +223,51 @@ public class Rede {
 
     }
 
-    public void testaRede(Automato rede, float[][] entradas, ArrayList classe, boolean funT, int tam) {
+    public int[] testaRede(Automato rede, float[][] entradas, ArrayList classe, boolean funT) {
         float[] entrada = new float[qtdEntrada];
         int[] saida;
+        int[] saidas = new int[entradas[0].length];
         this.rede = rede;
 
-        for (int i = 0; i < tam; i++) {
-            for (int j = 0; j < entradas[0].length; j++) {
-                for (int k = 0; k < qtdEntrada; k++) {
-                    entrada[k] = entradas[k][j];
-                }
-                saida = saidaDesejada(classe, funT, j);
-                calculaNetOculta(entrada);
-                if (funT) {//Logistica
-                    aplicaLogistica(true); //Camada oculta
-                } else {
-                    aplicaTanHiperbolica(true);
-                }
-                calculaNetSaida();
-                if (funT) {//Logistica
-                    aplicaLogistica(false); //Camda de saida
-                } else {
-                    aplicaTanHiperbolica(false);
-                }
+        for (int j = 0; j < entradas[0].length; j++) {
+            for (int k = 0; k < qtdEntrada; k++) {
+                entrada[k] = entradas[k][j];
+            }
+            saida = saidaDesejada(classe, funT, j);
+            calculaNetOculta(entrada);
+            if (funT) {//Logistica
+                aplicaLogistica(true); //Camada oculta
+            } else {
+                aplicaTanHiperbolica(true);
+            }
+            calculaNetSaida();
+            if (funT) {//Logistica
+                aplicaLogistica(false); //Camda de saida
+            } else {
+                aplicaTanHiperbolica(false);
+            }
+            saidas[j] = verificaSaidas();
+        }
+
+        return saidas;
+    }
+
+    public int verificaSaidas() {
+        double max;
+        int imax;
+        Neuronio n;
+        n = this.rede.getSaida().get(0);
+        max = n.getSaida();
+        imax = 0;
+
+        for (int i = 1; i < this.rede.getSaida().size(); i++) {
+            n = this.rede.getSaida().get(i);
+            if (max < n.getSaida()) {
+                max = n.getSaida();
+                imax = i;
             }
         }
+        return imax;
     }
 
     public double treinaRedeIteracao(Automato rede, float[][] entradas, ArrayList classe, boolean funT, int tam) {

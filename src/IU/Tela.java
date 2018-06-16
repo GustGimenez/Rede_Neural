@@ -32,6 +32,7 @@ import rede_neural.Rede;
 public class Tela extends javax.swing.JFrame {
 
     private float[][] entradas;
+    private int[] saidasObtidas;
     private ArrayList<Integer> saidas;
     private Automato rede;
     private Neuronio neuronio;
@@ -630,6 +631,7 @@ public class Tela extends javax.swing.JFrame {
         numEntradas = this.contEntradas(in, entradas);
         this.saidas = new ArrayList();
         numSaidas = this.entradasESaidas(in, numEntradas, entradas);
+        this.saidasObtidas = new int[entradas.size()];
 
         if (numSaidas == 0) {
             JOptionPane.showMessageDialog(null, "Erro ao percorrer o arquivo");
@@ -716,7 +718,18 @@ public class Tela extends javax.swing.JFrame {
     }//GEN-LAST:event_treinarRedeActionPerformed
 
     private void testaRedeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testaRedeBtnActionPerformed
-        // TODO add your handling code here:
+        boolean funT;
+        
+
+        if (this.log.isSelected()) {
+            funT = true;
+        } else {
+            funT = false;
+        }
+        
+        this.saidasObtidas = this.r.testaRede(rede, entradas, saidas, funT);
+        System.out.println("");
+        
     }//GEN-LAST:event_testaRedeBtnActionPerformed
 
     private void load_teste_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_teste_menuActionPerformed
