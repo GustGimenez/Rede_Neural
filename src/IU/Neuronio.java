@@ -23,14 +23,8 @@ public class Neuronio {
     private Color cor;  // cor padrão do contorno
     private ArrayList<Double> peso;
     private double net;
-
-    public double getNet() {
-        return net;
-    }
-
-    public void setNet(double net) {
-        this.net = net;
-    }
+    private double saida;
+    private double erro;
 
     private int pos; // posição no ArrayList da maquina
     private boolean visitado; // auxiliar
@@ -46,7 +40,32 @@ public class Neuronio {
         this.peso = new ArrayList();
     }
 
-  
+    public double getSaida() {
+        return saida;
+    }
+
+    public void setSaida(double saida) {
+        this.saida = saida;
+    }
+
+    public double getErro() {
+        return erro;
+    }
+
+    public void setErro(double erro) {
+        this.erro = erro;
+    }
+
+    
+    
+    public double getNet() {
+        return net;
+    }
+
+    public void setNet(double net) {
+        this.net = net;
+    }
+
     public Color getCor() {
         return cor;
     }
@@ -127,9 +146,6 @@ public class Neuronio {
         return this.cor;
     }
 
- 
-
-    
     //Funções de desenho e manipulação
     //Desenho
     public void desenha(Graphics2D g) {
@@ -142,18 +158,16 @@ public class Neuronio {
 
         g.setColor(Color.BLACK); // cor da borda
         // borda simples
-            g.setStroke(new java.awt.BasicStroke(3f));
-            g.drawOval(x - raio, y - raio, raio * 2, raio * 2);
-        
+        g.setStroke(new java.awt.BasicStroke(3f));
+        g.drawOval(x - raio, y - raio, raio * 2, raio * 2);
+
         g.drawString(this.estado, this.x - 4, this.y + 4);
-        
+
 //        if(this.tipo != 0){
 //            g.drawString(""+this.peso, this.x - 4, this.y - 10);
 //        }
-
     }
-    
-    
+
     // Funçao com parametros mais simples para desenhar circulos 
     public void desenhaCirculoBresenham(int x1, int y1, int x2, int y2, Graphics2D g) {
         int r, x, y, d, dE, dSE;
@@ -180,7 +194,7 @@ public class Neuronio {
         }
 
     }
-    
+
     // Funcao auxiliar ao DesenhaCirculoBresenham
     private void simetria8(int x, int y, Graphics2D g, int xc, int yc) {
         float contorno = 2f;
@@ -197,5 +211,4 @@ public class Neuronio {
     }
 
     //Desenha label abaixo do vertice
-   
 }

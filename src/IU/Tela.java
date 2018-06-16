@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -313,6 +314,11 @@ public class Tela extends javax.swing.JFrame {
 
         treinarRede.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         treinarRede.setText("Treinar Rede");
+        treinarRede.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                treinarRedeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout EstadosBtnPanelLayout = new javax.swing.GroupLayout(EstadosBtnPanel);
         EstadosBtnPanel.setLayout(EstadosBtnPanelLayout);
@@ -645,6 +651,30 @@ public class Tela extends javax.swing.JFrame {
 
     }//GEN-LAST:event_salvarPesosBtnActionPerformed
 
+    private void treinarRedeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_treinarRedeActionPerformed
+        boolean funT;
+
+        if (this.log.isSelected()) {
+            funT = true;
+        } else {
+            funT = false;
+        }
+        //Fiz separado pq não sei como fazer numa função só sem ela ficar enorme
+        if (this.erroMax.isSelected()) {
+            int num;
+            double erro = Double.parseDouble(this.erroMaxText.getText());
+            num = this.r.treinaRedeErro(rede, entradas, saidas, funT, erro);
+            JOptionPane.showMessageDialog(null, "A rede foi treinada !\nPara " + num + " iterações\n o erro foi de : " + erro);
+
+        } else {//Se for qnt de iterações
+            double erro;
+            int num = Integer.parseInt(this.numItText.getText());
+            erro = this.r.treinaRedeIteracao(rede, entradas, saidas, funT, num);
+            JOptionPane.showMessageDialog(null, "A rede foi treinada !\nPara " + num + " iterações\n o erro foi de : " + erro);
+
+        }
+    }//GEN-LAST:event_treinarRedeActionPerformed
+
     public void addOculta(int num) {
         int qtdOculta = this.r.getQtdOculta();
         addPesosSaida(num);
@@ -738,7 +768,7 @@ public class Tela extends javax.swing.JFrame {
     }
 
     public void setPesos(Neuronio n, int qtd) {
-
+        
         for (int j = 0; j < qtd; j++) {
             n.getPeso().add(Math.random());
         }
@@ -755,11 +785,11 @@ public class Tela extends javax.swing.JFrame {
             for (aux = 0; aux < entradas.size(); aux++) {
                 this.rede.addAresta(new Aresta(entradas.get(aux), n));
             }
-            
+
             for (aux = 0; aux < saidas.size(); aux++) {
                 this.rede.addAresta(new Aresta(n, saidas.get(aux)));
             }
-                
+
         }
     }
 

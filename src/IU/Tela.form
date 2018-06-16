@@ -433,6 +433,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Treinar Rede"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="treinarRedeActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
