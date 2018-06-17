@@ -42,6 +42,13 @@ public class Tela extends javax.swing.JFrame {
     private ViewPanel view;
     private ViewPanel view2;
     private ViewPanel view3;
+    
+    // Variáveis para auxiliar o fluxo de ações da interface
+    private boolean treinada;
+    private boolean testada;
+    private boolean abriuArqTreino;
+    private boolean abriuArqTeste;
+    
 
 
 
@@ -77,6 +84,10 @@ public class Tela extends javax.swing.JFrame {
         this.setComp();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setVisible(true);
+        this.testada = false;
+        this.treinada = false;
+        this.abriuArqTreino = false;
+        this.abriuArqTeste = false;
     }
 
     /*
@@ -265,7 +276,7 @@ public class Tela extends javax.swing.JFrame {
             PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelAutomatoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(TelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+                .addComponent(TelaPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 823, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(TabelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18))
@@ -312,7 +323,7 @@ public class Tela extends javax.swing.JFrame {
             .addGroup(PanelMatrizConfusaoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1144, Short.MAX_VALUE)
                     .addGroup(PanelMatrizConfusaoLayout.createSequentialGroup()
                         .addComponent(voltarBtn)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -420,10 +431,10 @@ public class Tela extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(numIt)
                         .addGap(4, 4, 4)))
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(numItText)
-                    .addComponent(erroMaxText, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(erroMaxText, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -654,9 +665,18 @@ public class Tela extends javax.swing.JFrame {
 
         criarRede();
 
+        this.abriuArqTreino = true;
+        this.abriuArqTeste = false;
+        this.treinada = false;
+        this.testada = false;
     }//GEN-LAST:event_load_menuActionPerformed
 
     private void numOcultaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numOcultaBtnActionPerformed
+        if(!this.abriuArqTreino){
+            JOptionPane.showMessageDialog(null, "Abra um arquivo!");
+            return;
+        }
+        
         int numOculta;
         try {
             numOculta = Integer.parseInt(this.numNeuroniosText.getText());
@@ -705,6 +725,11 @@ public class Tela extends javax.swing.JFrame {
     }//GEN-LAST:event_salvarPesosBtnActionPerformed
 
     private void treinarRedeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_treinarRedeActionPerformed
+        if(!this.abriuArqTreino){
+            JOptionPane.showMessageDialog(null, "Selecione um arquivo de treinamento!");
+            return;
+        }
+        
         boolean funT;
 
         if (this.log.isSelected()) {
@@ -726,22 +751,39 @@ public class Tela extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "A rede foi treinada !\nPara " + num + " iterações\n o erro foi de : " + erro);
 
         }
+        
+        this.treinada = true;
     }//GEN-LAST:event_treinarRedeActionPerformed
 
     private void testaRedeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testaRedeBtnActionPerformed
+        if(!this.abriuArqTreino || !this.treinada){
+            JOptionPane.showMessageDialog(null, "Antes de testar, treine a rede!");
+            return;
+        }
+        else if(!this.abriuArqTeste){
+            JOptionPane.showMessageDialog(null, "Abra o arquivo de teste!");
+            return;
+        }
+        
         boolean funT;
         
-
         if (this.log.isSelected()) {
             funT = true;
         } else {
             funT = false;
         }
         
-        this.saidasObtidas = this.r.testaRede(rede, entradas, saidas, funT);  
+        this.saidasObtidas = this.r.testaRede(rede, entradas, saidas, funT); 
+        this.testada = true;
     }//GEN-LAST:event_testaRedeBtnActionPerformed
 
     private void load_teste_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_teste_menuActionPerformed
+        if(!this.abriuArqTreino || !this.treinada){
+            JOptionPane.showMessageDialog(null, "Antes de abrir o arquivo de testes,"
+                    + " treine a rede!");
+            return;
+        }
+        
         int numEntradas;
         int numSaidas;
         ArrayList<ArrayList<Integer>> entradas = new ArrayList();
@@ -778,12 +820,22 @@ public class Tela extends javax.swing.JFrame {
         this.r.setQtdSaida(numSaidas);
 
         this.entradas = this.r.normalizaEntradas(entradas);
+        
+        this.abriuArqTeste = true;
     }//GEN-LAST:event_load_teste_menuActionPerformed
 
     private void matriz_confusao_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matriz_confusao_menuActionPerformed
+        if(!this.testada){
+            JOptionPane.showMessageDialog(null, "Teste a rede para verificar a matriz!");
+            return;
+        }
+        
         DefaultTableModel matriz = (DefaultTableModel) this.matrizConfusao.getModel();
         int qtdSaida = this.r.getQtdSaida();
         int[][] matrizConfusa = new int[qtdSaida][qtdSaida];
+        
+        matriz.setColumnCount(0);
+        matriz.setNumRows(0);
         
         matriz.addColumn("Classes/Saídas");
         
