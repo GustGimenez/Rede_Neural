@@ -340,14 +340,12 @@ public class Rede {
                 ajustaPesosSaida();
 
                 e = calculaErroRede();
-                System.out.println(e);
 
                 if (e >= erro) {
                     aux = true;
                 }
 
             }
-            System.out.println(i);
 
             i++;
         } while (aux);
