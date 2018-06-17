@@ -5,6 +5,7 @@
  */
 package IU;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Point;
 import java.io.BufferedReader;
@@ -42,15 +43,7 @@ public class Tela extends javax.swing.JFrame {
     private ViewPanel view2;
     private ViewPanel view3;
 
-    private final int ENTRADA = 0;
-    private final int OCULTA = 1;
-    private final int SAIDA = 2;
 
-    private final boolean gr;
-    private int auxX, auxY;
-    private String strTrans;
-
-    private int op; // 0 - novo estado, 1 -  nova transição, 2 - remover, 3 - arrastar
 
     private DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN);
 
@@ -79,7 +72,6 @@ public class Tela extends javax.swing.JFrame {
 
     public Tela() {
         rede = new Automato();
-        this.gr = false;
         this.initTela();
         initComponents();
         this.setComp();
@@ -91,7 +83,6 @@ public class Tela extends javax.swing.JFrame {
         *Herdado do projeto de automatos
      */
     public Tela(Automato a) {
-        this.gr = true;
         this.rede = a;
         this.initTela();
         initComponents();
@@ -126,6 +117,7 @@ public class Tela extends javax.swing.JFrame {
         PanelMatrizConfusao = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         matrizConfusao = new javax.swing.JTable();
+        voltarBtn = new javax.swing.JButton();
         EstadosBtnPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         numNeuroniosText = new javax.swing.JTextField();
@@ -261,7 +253,7 @@ public class Tela extends javax.swing.JFrame {
             TabelaPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TabelaPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(salvarPesosBtn)
                 .addContainerGap(119, Short.MAX_VALUE))
@@ -282,13 +274,16 @@ public class Tela extends javax.swing.JFrame {
             PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelAutomatoLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(PanelAutomatoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TabelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(TabelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(PanelAutomatoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(TelaPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGap(10, 10, 10))
         );
 
-        AutomatoLayout.add(PanelAutomato, "AutomatoEdit");
+        AutomatoLayout.add(PanelAutomato, "PainelAutomato");
+        PanelAutomato.getAccessibleContext().setAccessibleName("");
 
         matrizConfusao.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -303,24 +298,37 @@ public class Tela extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(matrizConfusao);
 
+        voltarBtn.setText("Voltar");
+        voltarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                voltarBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout PanelMatrizConfusaoLayout = new javax.swing.GroupLayout(PanelMatrizConfusao);
         PanelMatrizConfusao.setLayout(PanelMatrizConfusaoLayout);
         PanelMatrizConfusaoLayout.setHorizontalGroup(
             PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelMatrizConfusaoLayout.createSequentialGroup()
-                .addGap(159, 159, 159)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(430, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
+                    .addGroup(PanelMatrizConfusaoLayout.createSequentialGroup()
+                        .addComponent(voltarBtn)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         PanelMatrizConfusaoLayout.setVerticalGroup(
             PanelMatrizConfusaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelMatrizConfusaoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(voltarBtn)
+                .addContainerGap(54, Short.MAX_VALUE))
         );
 
-        AutomatoLayout.add(PanelMatrizConfusao, "card3");
+        AutomatoLayout.add(PanelMatrizConfusao, "PainelMatrizConfusao");
 
         EstadosBtnPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -730,9 +738,7 @@ public class Tela extends javax.swing.JFrame {
             funT = false;
         }
         
-        this.saidasObtidas = this.r.testaRede(rede, entradas, saidas, funT);
-        System.out.println("");
-        
+        this.saidasObtidas = this.r.testaRede(rede, entradas, saidas, funT);  
     }//GEN-LAST:event_testaRedeBtnActionPerformed
 
     private void load_teste_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_teste_menuActionPerformed
@@ -776,12 +782,39 @@ public class Tela extends javax.swing.JFrame {
 
     private void matriz_confusao_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matriz_confusao_menuActionPerformed
         DefaultTableModel matriz = (DefaultTableModel) this.matrizConfusao.getModel();
-        int qtdClasses = this.r.getQtdEntrada();
-
-        matriz.setNumRows(qtdClasses);
-        matriz.setColumnCount(qtdClasses);
-
+        int qtdSaida = this.r.getQtdSaida();
+        int[][] matrizConfusa = new int[qtdSaida][qtdSaida];
+        
+        matriz.addColumn("Classes/Saídas");
+        
+        for (int i = 0; i < qtdSaida; i++) {
+            matriz.addColumn(i + 1);
+        }
+        
+        matriz.setNumRows(qtdSaida);
+        for (int i = 0; i < qtdSaida; i++) {
+            matriz.setValueAt(i + 1, i, 0);
+        }
+        
+        for (int i = 0; i < this.saidasObtidas.length; i++) {
+            matrizConfusa[this.saidasObtidas[i] - 1][this.saidas.get(i) - 1]++;
+        }
+        
+        for (int i = 0; i < qtdSaida; i++) {
+            for (int j = 0; j < qtdSaida; j++) {
+                matriz.setValueAt(matrizConfusa[i][j], i, j + 1);
+            }
+        }
+        
+        CardLayout card = (CardLayout) this.AutomatoLayout.getLayout();
+        card.show(this.AutomatoLayout, "PainelMatrizConfusao");
     }//GEN-LAST:event_matriz_confusao_menuActionPerformed
+
+    private void voltarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_voltarBtnActionPerformed
+        // TODO add your handling code here:
+        CardLayout card = (CardLayout) this.AutomatoLayout.getLayout();
+        card.show(this.AutomatoLayout, "PainelAutomato");
+    }//GEN-LAST:event_voltarBtnActionPerformed
 
     public void addOculta(int num) {
         int qtdOculta = this.r.getQtdOculta();
@@ -789,7 +822,7 @@ public class Tela extends javax.swing.JFrame {
         num = num + qtdOculta;
 
         for (int i = qtdOculta; i < num; i++) {
-            Neuronio n = new Neuronio(250, (i + 1) * 100, "o" + i, i);
+            Neuronio n = new Neuronio(550, (i + 1) * 100, "o" + i, i);
             setPesos(n, this.r.getQtdEntrada());
             this.rede.getOculta().add(n);
             addNovasArestas(n, n.getEstado().charAt(0));
@@ -854,13 +887,13 @@ public class Tela extends javax.swing.JFrame {
 
         // Criando os neurônios
         for (int i = 0; i < qtdEntrada; i++) {
-            Neuronio n = new Neuronio(50, (i + 1) * 100, "e" + i, i);
+            Neuronio n = new Neuronio(150, (i + 1) * 100, "e" + i, i);
             this.rede.getEntrada().add(n);
         }
 
         // Criando os neuronios da camada de saída, e setando os seus pesos
         for (int i = 0; i < qtdSaida; i++) {
-            Neuronio n = new Neuronio(450, (i + 1) * 100, "s" + i, i);
+            Neuronio n = new Neuronio(750, (i + 1) * 100, "s" + i, i);
             setPesos(n, qtdOculta);
             this.rede.getSaida().add(n);
 
@@ -868,7 +901,7 @@ public class Tela extends javax.swing.JFrame {
 
         // Criando os neuronios da camada oculta, e setando os seus pesos
         for (int i = 0; i < qtdOculta; i++) {
-            Neuronio n = new Neuronio(250, (i + 1) * 100, "o" + i, i);
+            Neuronio n = new Neuronio(450, (i + 1) * 100, "o" + i, i);
             setPesos(n, qtdEntrada);
             this.rede.getOculta().add(n);
         }
@@ -1034,5 +1067,6 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JButton testaRedeBtn;
     private javax.swing.JRadioButton thip;
     private javax.swing.JButton treinarRede;
+    private javax.swing.JButton voltarBtn;
     // End of variables declaration//GEN-END:variables
 }
