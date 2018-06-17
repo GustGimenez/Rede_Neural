@@ -263,7 +263,7 @@ public class Rede {
 
         for (int i = 1; i < this.rede.getSaida().size(); i++) {
             n = this.rede.getSaida().get(i);
-            if (max < n.getSaida()) {
+            if (max <= n.getSaida()) {
                 max = n.getSaida();
                 imax = i;
             }

@@ -88,6 +88,9 @@ public class Tela extends javax.swing.JFrame {
         this.treinada = false;
         this.abriuArqTreino = false;
         this.abriuArqTeste = false;
+        
+        this.EstadosBtnPanel.setEnabled(false);
+        this.load_teste_menu.setEnabled(false);
     }
 
     /*
@@ -664,6 +667,9 @@ public class Tela extends javax.swing.JFrame {
         this.entradas = this.r.normalizaEntradas(entradas);
 
         criarRede();
+        this.EstadosBtnPanel.setEnabled(true);
+        this.testaRedeBtn.setEnabled(false);
+        this.load_teste_menu.setEnabled(true);
 
         this.abriuArqTreino = true;
         this.abriuArqTeste = false;
@@ -704,6 +710,8 @@ public class Tela extends javax.swing.JFrame {
         int tipo;
         ArrayList<Neuronio> neuronios;
         ArrayList<Double> pesos = new ArrayList();
+        
+        try{
 
         if (aux.charAt(0) == 'o') {
             tipo = 1;
@@ -721,6 +729,9 @@ public class Tela extends javax.swing.JFrame {
         }
 
         this.neuronio.setPeso(pesos);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Entrada inválida!");
+        }
 
     }//GEN-LAST:event_salvarPesosBtnActionPerformed
 
@@ -738,17 +749,17 @@ public class Tela extends javax.swing.JFrame {
             funT = false;
         }
         //Fiz separado pq não sei como fazer numa função só sem ela ficar enorme
-        if (this.erroMax.isSelected()) {
+        if (this.erroMax.isSelected()) {//Por erro
             int num;
             double erro = Double.parseDouble(this.erroMaxText.getText());
             num = this.r.treinaRedeErro(rede, entradas, saidas, funT, erro);
-            JOptionPane.showMessageDialog(null, "A rede foi treinada !\nPara " + num + " iterações\n o erro foi de : " + erro);
+            JOptionPane.showMessageDialog(null, "A rede foi treinada !\nPara o erro de: " + erro + "\n Foram necessárias " + num + " iterações");
 
         } else {//Se for qnt de iterações
             double erro;
             int num = Integer.parseInt(this.numItText.getText());
             erro = this.r.treinaRedeIteracao(rede, entradas, saidas, funT, num);
-            JOptionPane.showMessageDialog(null, "A rede foi treinada !\nPara " + num + " iterações\n o erro foi de : " + erro);
+            JOptionPane.showMessageDialog(null, "A rede foi treinada !\nPara " + num + " iterações\n O erro foi de : " + erro);
 
         }
         
@@ -775,6 +786,7 @@ public class Tela extends javax.swing.JFrame {
         
         this.saidasObtidas = this.r.testaRede(rede, entradas, saidas, funT); 
         this.testada = true;
+        JOptionPane.showMessageDialog(null, "A rede foi testada !\nPara ver a matriz de confusão\nclique na aba 'Rede'");
     }//GEN-LAST:event_testaRedeBtnActionPerformed
 
     private void load_teste_menuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_load_teste_menuActionPerformed
@@ -783,6 +795,7 @@ public class Tela extends javax.swing.JFrame {
                     + " treine a rede!");
             return;
         }
+        this.testaRedeBtn.setEnabled(true);
         
         int numEntradas;
         int numSaidas;
@@ -814,6 +827,8 @@ public class Tela extends javax.swing.JFrame {
 
         if (numSaidas == 0) {
             JOptionPane.showMessageDialog(null, "Erro ao percorrer o arquivo");
+        }else{
+            JOptionPane.showMessageDialog(null, "Arquivo de teste carregado com sucesso !");
         }
 
         this.r.setQtdEntrada(numEntradas);
@@ -874,7 +889,7 @@ public class Tela extends javax.swing.JFrame {
         num = num + qtdOculta;
 
         for (int i = qtdOculta; i < num; i++) {
-            Neuronio n = new Neuronio(550, (i + 1) * 100, "o" + i, i);
+            Neuronio n = new Neuronio(450, (i + 1) * 100, "o" + i, i);
             setPesos(n, this.r.getQtdEntrada());
             this.rede.getOculta().add(n);
             addNovasArestas(n, n.getEstado().charAt(0));
