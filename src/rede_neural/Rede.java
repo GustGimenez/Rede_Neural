@@ -84,27 +84,27 @@ public class Rede {
 
     public void calculaNetOculta(float[] entradas) {
         double net = 0;
-        for (Neuronio n : this.rede.getOculta()) { //Pra cada neuronio
+        for (Neuronio n : this.rede.getOculta()) { //Pra cada neuronio da camada oculta
             for (int i = 0; i < entradas.length; i++) { //Pra cada entrada
                 net += (double) n.getPeso().get(i) * entradas[i]; //Peso correspondente a entrada multiplicada pela mesma
-            }
-            n.setNet(net);
+            }//fim for entradas
+            n.setNet(net);//seta o valor do net
             net = 0;
-        }//fim for entradas
-    }//for neuronios
+        }//fim for neuronios
+    }
 
     public void calculaNetSaida() {
         double net = 0;
         int i = 0;
-        for (Neuronio n : this.rede.getSaida()) {
-            for (i = 0; i < this.rede.getOculta().size(); i++) {
+        for (Neuronio n : this.rede.getSaida()) {//Pra cada neuronio da camada de saida
+            for (i = 0; i < this.rede.getOculta().size(); i++) {//Pra cada neuronio da camada oculta
                 Neuronio nOculta = this.rede.getOculta().get(i);
                 net += (double) n.getPeso().get(i) * nOculta.getSaida();
-            }
+            }//fim for entradas
             n.setNet(net);
             net = 0;
-        }//fim for entradas
-    }//for neuronios
+        }//for neuronios
+    }
 
     public void aplicaLogistica(boolean camada) {
         double saida;
@@ -153,10 +153,11 @@ public class Rede {
 
     public void calculaErroOculta(boolean funT) {
         double erros = 0;
-        for (int i = 0; i < this.rede.getSaida().size(); i++) {
-            Neuronio nOculta = this.rede.getSaida().get(i);
-            for (Neuronio n : this.rede.getOculta()) {
-                erros += n.getErro() + (double) n.getPeso().get(i);
+
+        for (int i = 0; i < this.rede.getOculta().size(); i++) {
+            Neuronio nOculta = this.rede.getOculta().get(i);
+            for (Neuronio n : this.rede.getSaida()) {
+                erros += n.getErro() * (double) n.getPeso().get(i);
             }
             if (funT) { //Logistica
                 erros *= ((Math.pow(Math.E, -nOculta.getNet())) / Math.pow((1 + Math.pow(Math.E, -nOculta.getNet())), 2));
@@ -267,7 +268,7 @@ public class Rede {
                 imax = i;
             }
         }
-        return imax;
+        return imax+1;
     }
 
     public double treinaRedeIteracao(Automato rede, float[][] entradas, ArrayList classe, boolean funT, int tam) {
@@ -314,10 +315,13 @@ public class Rede {
         do {
             aux = false;
             for (int j = 0; j < entradas[0].length; j++) {
+                //inicializa as entradas
                 for (int k = 0; k < qtdEntrada; k++) {
                     entrada[k] = entradas[k][j];
                 }
+                //forma a saida desejada (1 0 0 0 0) ou (1 -1 -1 -1 -1)
                 saida = saidaDesejada(classe, funT, j);
+                //calcula os nets da camada oculta
                 calculaNetOculta(entrada);
                 if (funT) {//Logistica
                     aplicaLogistica(true); //Camada oculta
