@@ -175,7 +175,7 @@ public class Rede {
         for (Neuronio n : this.rede.getSaida()) {
             for (int i = 0; i < this.rede.getOculta().size(); i++) {
                 Neuronio nOculta = this.rede.getOculta().get(i);
-                peso = (double) n.getPeso().get(i) + 0.3 * n.getErro() * nOculta.getNet();
+                peso = (double) n.getPeso().get(i) + 0.1 * n.getErro() * nOculta.getNet();
                 n.getPeso().set(i, peso);
                 peso = 0;
             }
@@ -186,7 +186,7 @@ public class Rede {
         double peso = 0;
         for (Neuronio n : this.rede.getOculta()) {
             for (int i = 0; i < entrada.length; i++) {
-                peso = (double) n.getPeso().get(i) + 0.3 * n.getErro() * entrada[i];
+                peso = (double) n.getPeso().get(i) + 0.1 * n.getErro() * entrada[i];
                 n.getPeso().set(i, peso);
                 peso = 0;
             }

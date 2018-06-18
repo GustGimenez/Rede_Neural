@@ -675,6 +675,9 @@ public class Tela extends javax.swing.JFrame {
         this.abriuArqTeste = false;
         this.treinada = false;
         this.testada = false;
+        
+        CardLayout card = (CardLayout) this.AutomatoLayout.getLayout();
+        card.show(this.AutomatoLayout, "PainelAutomato");
     }//GEN-LAST:event_load_menuActionPerformed
 
     private void numOcultaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numOcultaBtnActionPerformed
